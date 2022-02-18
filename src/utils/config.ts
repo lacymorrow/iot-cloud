@@ -8,6 +8,8 @@ const config = {
   locale: 'en',
   errorMessage: '',
   fakeHardwareid: 'xxxxx',
+  MAX_RETRIES: 10,
+  RETRY_DELAY: 500,
 };
 
 config.errorMessage = `There was an error, please email <a href="mailto:${config.email}">${config.email}</a>`;

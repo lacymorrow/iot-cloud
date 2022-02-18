@@ -21,6 +21,7 @@
     Exposed at window.pywebview.api[endpoint]
 
 */
+import config from '../../utils/config';
 
 declare global {
   interface Window {
@@ -28,15 +29,12 @@ declare global {
   }
 }
 
-const MAX_RETRIES = 10;
-const RETRY_DELAY = 500;
-
 let failCount = 0;
 
 /* Python API -> Shell Connection */
 const pycall = (endpoint: string, params = {}) => {
-  if (window?.pywebview) {
-    return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
+    if (window?.pywebview) {
       let retries = 0;
 
       const run = () => {
@@ -44,7 +42,7 @@ const pycall = (endpoint: string, params = {}) => {
          * If we already have run MAX_RETRIES once, fail on the first attempt:
          * We don't have pywebview.
          */
-        if (retries === MAX_RETRIES || failCount > 0) {
+        if (retries === config.MAX_RETRIES || failCount > 0) {
           failCount += 1;
           return reject(
             new Error(
@@ -57,7 +55,7 @@ const pycall = (endpoint: string, params = {}) => {
           const res = window?.pywebview?.api[endpoint](params);
           return resolve(res);
         } catch (e) {
-          setTimeout(run, RETRY_DELAY);
+          setTimeout(run, config.RETRY_DELAY);
         }
 
         retries += 1;
@@ -65,9 +63,9 @@ const pycall = (endpoint: string, params = {}) => {
       };
 
       run();
-    });
-  }
-  return false;
+    }
+    return reject();
+  });
 };
 
 export default pycall;
