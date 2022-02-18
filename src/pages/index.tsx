@@ -18,7 +18,6 @@ import Link from 'next/link';
 
 import Meta from '../components/Meta';
 import QRCode from '../components/QRCode';
-import { BigTitle } from '../styles/index.styles';
 import HomeLayout from '../templates/MainLayout';
 import config from '../utils/config';
 import { generateRandom } from '../utils/utils';
@@ -53,7 +52,7 @@ const Index = () => {
         title={`${config.title}: ${config.tagline}`}
         description={config.description}
       />
-
+      {/*
       <BigTitle
         className="text-8xl sm:text-12xl"
         active={active}
@@ -61,7 +60,7 @@ const Index = () => {
         content={'Welcome.'}
       >
         Welcome.
-      </BigTitle>
+      </BigTitle> */}
 
       <div className="text-center">
         <h1>SmartCloud ID</h1>

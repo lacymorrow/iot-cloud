@@ -11,6 +11,7 @@ declare global {
 }
 
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
+  console.log(session);
   return (
     <>
       <NextNProgress
