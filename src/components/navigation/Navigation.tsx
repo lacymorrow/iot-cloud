@@ -3,8 +3,6 @@ import { Menu } from 'antd';
 import SubMenu from 'antd/lib/menu/SubMenu';
 import Link from 'next/link';
 
-import SettingsMenu from './SettingsMenu';
-
 const Navigation = () => {
   return (
     <Menu
@@ -34,8 +32,6 @@ const Navigation = () => {
           </Link>
         </Menu.Item>
       </SubMenu>
-
-      <SettingsMenu />
     </Menu>
   );
 };

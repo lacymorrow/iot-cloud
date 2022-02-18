@@ -1,4 +1,3 @@
-import { SessionProvider } from 'next-auth/react';
 import { AppProps } from 'next/app';
 import NextNProgress from 'nextjs-progressbar';
 
@@ -13,7 +12,7 @@ declare global {
 
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
   return (
-    <SessionProvider session={session}>
+    <>
       <NextNProgress
         startPosition={0.2}
         stopDelayMs={100}
@@ -21,7 +20,7 @@ const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
         showOnShallow={false}
       />
       <Component {...pageProps} />
-    </SessionProvider>
+    </>
   );
 };
 
