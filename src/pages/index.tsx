@@ -12,32 +12,29 @@
 	type: any
 */
 
-import { useEffect, useState } from 'react';
-
 import Link from 'next/link';
 
 import Meta from '../components/Meta';
 import QRCode from '../components/QRCode';
 import HomeLayout from '../templates/MainLayout';
 import config from '../utils/config';
-import { generateRandom } from '../utils/utils';
 
 const Index = () => {
-  const [imageIndex, setImageIndex] = useState(0);
-  const [active, setActive] = useState(false);
+  // const [imageIndex, setImageIndex] = useState(0);
+  // const [active, setActive] = useState(false);
 
-  useEffect(() => {
-    // Runs on mount only
-    setImageIndex(generateRandom(config.totalImages));
+  // useEffect(() => {
+  //   // Runs on mount only
+  //   setImageIndex(generateRandom(config.totalImages));
 
-    // Fade in clipped image
-    if (!active) {
-      setTimeout(() => {
-        setActive(true);
-      }, 2500);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   // Fade in clipped image
+  //   if (!active) {
+  //     setTimeout(() => {
+  //       setActive(true);
+  //     }, 2500);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return (
     <HomeLayout

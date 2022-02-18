@@ -20,7 +20,8 @@ const QRCode = () => {
   if (!data) return <div>loading...</div>;
   return (
     <div>
-      <h1>{data}</h1>;<h1>{id}</h1>
+      <h1>{data}</h1>
+      <h1>{id}</h1>
       <Button onClick={onReload}>Reload</Button>
     </div>
   );
