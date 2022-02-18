@@ -35,36 +35,39 @@ let failCount = 0;
 
 /* Python API -> Shell Connection */
 const pycall = (endpoint: string, params = {}) => {
-  return new Promise((resolve, reject) => {
-    let retries = 0;
+  if (window?.pywebview) {
+    return new Promise((resolve, reject) => {
+      let retries = 0;
 
-    const run = () => {
-      /**
-       * If we already have run MAX_RETRIES once, fail on the first attempt:
-       * We don't have pywebview.
-       */
-      if (retries === MAX_RETRIES || failCount > 0) {
-        failCount += 1;
-        return reject(
-          new Error(
-            `< ${endpoint} has failed. You may not be in a python browser.`
-          )
-        );
-      }
+      const run = () => {
+        /**
+         * If we already have run MAX_RETRIES once, fail on the first attempt:
+         * We don't have pywebview.
+         */
+        if (retries === MAX_RETRIES || failCount > 0) {
+          failCount += 1;
+          return reject(
+            new Error(
+              `< ${endpoint} has failed. You may not be in a python browser.`
+            )
+          );
+        }
 
-      try {
-        const res = window?.pywebview?.api[endpoint](params);
-        return resolve(res);
-      } catch (e) {
-        setTimeout(run, RETRY_DELAY);
-      }
+        try {
+          const res = window?.pywebview?.api[endpoint](params);
+          return resolve(res);
+        } catch (e) {
+          setTimeout(run, RETRY_DELAY);
+        }
 
-      retries += 1;
-      return retries;
-    };
+        retries += 1;
+        return retries;
+      };
 
-    run();
-  });
+      run();
+    });
+  }
+  return false;
 };
 
 export default pycall;
