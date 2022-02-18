@@ -15,7 +15,7 @@
 import Link from 'next/link';
 
 import Meta from '../components/Meta';
-import QRCode from '../components/QRCode';
+import QrCode from '../components/QrCode';
 import HomeLayout from '../templates/MainLayout';
 import config from '../utils/config';
 
@@ -60,14 +60,14 @@ const Index = () => {
       </BigTitle> */}
 
       <div className="text-center">
-        <h1>SmartCloud ID</h1>
+        {/* <h1>SmartCloud ID</h1> */}
         <h2>
           <Link href="/wifi">
             <a>WiFi Setup</a>
           </Link>
         </h2>
 
-        <QRCode />
+        <QrCode />
       </div>
     </HomeLayout>
   );
