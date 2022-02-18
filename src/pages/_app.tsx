@@ -18,7 +18,7 @@ declare global {
 
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
   // Prevent error when testing
-  if (!window?.pywebview) {
+  if (window && !window.pywebview) {
     window.pywebview = { api: {} };
   }
 
