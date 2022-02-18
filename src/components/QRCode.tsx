@@ -16,10 +16,12 @@ const QRCode = () => {
 
   // useEffect(onReload, [id]);
 
-  if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
   return (
     <div>
+      {!data && <div>loading...</div>}
+      {error && <div>failed to load</div>}
+
       <h1>{data}</h1>
       <h1>{id}</h1>
       <Button onClick={onReload}>Reload</Button>
