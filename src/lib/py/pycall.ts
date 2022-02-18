@@ -47,9 +47,8 @@ const pycall = (endpoint: string, params = {}) => {
       }
 
       try {
-        // const res = window.pywebview.api[endpoint](params);
-        // return resolve(res);
-        return resolve(params);
+        const res = window.pywebview.api[endpoint](params);
+        return resolve(res);
       } catch (e) {
         setTimeout(run, RETRY_DELAY);
       }

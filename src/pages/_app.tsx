@@ -11,7 +11,12 @@ import '../styles/global.css';
 import 'antd/dist/antd.css';
 
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
-  const router = useRouter();
+  // Prevent error when testing
+  if(!window?.pywebview) {
+		window.pywebview = {}
+	}
+
+	const router = useRouter();
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
