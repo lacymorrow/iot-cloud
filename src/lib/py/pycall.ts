@@ -22,6 +22,12 @@
 
 */
 
+declare global {
+  interface Window {
+    pywebview?: any;
+  }
+}
+
 const MAX_RETRIES = 10;
 const RETRY_DELAY = 500;
 
@@ -47,7 +53,7 @@ const pycall = (endpoint: string, params = {}) => {
       }
 
       try {
-        const res = window.pywebview.api[endpoint](params);
+        const res = window?.pywebview?.api[endpoint](params);
         return resolve(res);
       } catch (e) {
         setTimeout(run, RETRY_DELAY);

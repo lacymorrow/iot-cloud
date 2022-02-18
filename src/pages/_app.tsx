@@ -10,13 +10,19 @@ import * as ga from '../lib/ga';
 import '../styles/global.css';
 import 'antd/dist/antd.css';
 
+declare global {
+  interface Window {
+    pywebview?: any;
+  }
+}
+
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
   // Prevent error when testing
-  if(!window?.pywebview) {
-		window.pywebview = {}
-	}
+  if (!window?.pywebview) {
+    window.pywebview = { api: {} };
+  }
 
-	const router = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
