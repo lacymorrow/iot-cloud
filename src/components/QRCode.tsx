@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { Button } from 'antd';
 import useSWR from 'swr';
@@ -14,7 +14,7 @@ const QRCode = () => {
     setId(hwid);
   };
 
-  useEffect(onReload, [id]);
+  // useEffect(onReload, [id]);
 
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
