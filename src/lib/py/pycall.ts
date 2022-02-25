@@ -21,6 +21,7 @@
     Exposed at window.pywebview.api[endpoint]
 
 */
+
 import config from '../../utils/config';
 
 declare global {
@@ -29,30 +30,29 @@ declare global {
   }
 }
 
-let failCount = 0;
-
 /* Python API -> Shell Connection */
 const pycall = (endpoint: string, params = {}) => {
   return new Promise((resolve, reject) => {
     if (window?.pywebview) {
+      window?.pywebview?.api?.log(`PyCall ${endpoint}`);
       let retries = 0;
 
-      const run = () => {
+      const run = async () => {
+        window?.pywebview?.api?.log(`retries ${retries}`);
         /**
          * If we already have run MAX_RETRIES once, fail on the first attempt:
          * We don't have pywebview.
          */
-        if (retries === config.MAX_RETRIES || failCount > 0) {
-          failCount += 1;
-          return reject(
-            new Error(
-              `< ${endpoint} has failed. You may not be in a python browser.`
-            )
-          );
+        if (retries === config.MAX_RETRIES) {
+          const error = `< ${endpoint} has failed. You may not be in a python browser.`;
+          window?.pywebview?.api?.log(error);
+          return reject(new Error(error));
         }
 
         try {
-          const res = window?.pywebview?.api[endpoint](params);
+          const res = await window?.pywebview?.api[endpoint](params);
+
+          window?.pywebview?.api?.log(`result ${res}`);
           return resolve(res);
         } catch (e) {
           setTimeout(run, config.RETRY_DELAY);
@@ -64,7 +64,8 @@ const pycall = (endpoint: string, params = {}) => {
 
       run();
     }
-    return reject();
+
+    return reject(new Error(`< ${endpoint} has failed.`));
   });
 };
 

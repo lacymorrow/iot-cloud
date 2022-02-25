@@ -20,12 +20,14 @@
 
 /* Python API -> Shell Connection */
 
-// const pycallSync = (endpoint: string, params: any) => {
-//   if (typeof window.pywebview !== 'undefined') {
-//     return window.pywebview.api[endpoint](params);
-//   }
-//   return false;
-// };
+const pycallSync = (endpoint: string, params?: any) => {
+  if (typeof window.pywebview !== 'undefined') {
+    window?.pywebview?.api?.log('PycallSync');
+    const result = window.pywebview.api[endpoint](params);
+    window?.pywebview?.api?.log(result?.message);
+    return result;
+  }
+  return false;
+};
 
-// export default pycallSync;
-export {};
+export default pycallSync;
