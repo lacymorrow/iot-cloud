@@ -24,7 +24,6 @@
 
 import config from '../../utils/config';
 import { retryOperation } from '../../utils/utils';
-import pylog from './pylog';
 
 declare global {
   interface Window {
@@ -37,14 +36,14 @@ const pycall = (endpoint: string, params = {}) => {
   return retryOperation(
     async () => {
       try {
-        await pylog(`PyCall ${endpoint}`);
-        const res: string | { message: string } = await window.pywebview?.api[
+        await window.pywebview.api.log(`PyCall ${endpoint}`);
+        const res: string | { message: string } = await window.pywebview.api[
           endpoint
         ](params);
         return res;
       } catch (error) {
         let errorMessage = `PyCall ${endpoint} failed`;
-        await pylog(errorMessage);
+        await window.pywebview.api.log(errorMessage);
         if (error instanceof Error) {
           errorMessage = error.message;
         }
@@ -60,13 +59,13 @@ const pycall = (endpoint: string, params = {}) => {
         const result = JSON.parse(res);
         return result.message;
       } catch (error) {
-        await pylog(res);
+        await window.pywebview.api.log(res);
         return res;
       }
     })
     .catch(async (error) => {
       // Operation failed
-      await pylog(error);
+      await window.pywebview.api.log(error);
     });
 };
 

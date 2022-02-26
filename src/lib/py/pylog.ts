@@ -1,4 +1,6 @@
 const pylog = async (text: string) => {
+  console.log(text);
+
   try {
     // Response is json {message: string}
     await window.pywebview?.api?.log(text);
