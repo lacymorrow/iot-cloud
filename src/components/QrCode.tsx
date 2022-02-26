@@ -11,11 +11,11 @@ const QrCode = () => {
   const qrEl = useRef(null);
 
   const onReload = async () => {
-    const hwid = getHardwareId();
+    const hwid = await getHardwareId();
     setlog(`${log}id${hwid}`);
     setId(hwid);
 
-    QRCode.toCanvas(qrEl.current, 'sample text', function (error) {
+    QRCode.toCanvas(qrEl.current, 'sample text', (error) => {
       if (error) console.error(error);
       console.log('success!');
     });
