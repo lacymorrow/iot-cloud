@@ -64,7 +64,7 @@ const Index = () => {
         <LoadingButton
           // onClick={handleClick}
           endIcon={<SendIcon />}
-          loading={true}
+          // loading={true}
           loadingPosition="end"
           variant="contained"
         >

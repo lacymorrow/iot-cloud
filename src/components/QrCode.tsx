@@ -7,8 +7,8 @@ const QrCode = ({ data }: { data: string }) => {
 
   useEffect(() => {
     QRCode.toCanvas(qrEl.current, data, async (error) => {
-      if (error) await window.pywebview.api.log(error);
-      await window.pywebview.api.log(`Created QR: ${data}`);
+      if (error) await window.pywebview?.api?.log(error);
+      await window.pywebview?.api?.log(`Created QR: ${data}`);
     });
   }, [data]);
 

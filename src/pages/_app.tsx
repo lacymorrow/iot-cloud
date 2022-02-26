@@ -1,6 +1,6 @@
 import { AppProps } from 'next/app';
 
-// import '../styles/global.css';
+import '../styles/global.css';
 
 declare global {
   interface Window {
