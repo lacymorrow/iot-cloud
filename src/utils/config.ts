@@ -1,13 +1,12 @@
 const config = {
-  totalImages: 21,
-  site_name: 'iot-firmware',
+  totalImages: 5,
+  site_name: 'iot-cloud',
   email: 'me@lacymorrow.com',
   title: 'SmartCloud',
   tagline: 'Firmware for iot scheduler',
   description: 'Firmware for iot scheduler',
   locale: 'en',
   errorMessage: '',
-  fakeHardwareid: 'xxxxx',
   MAX_RETRIES: 10,
   RETRY_DELAY: 500,
 };

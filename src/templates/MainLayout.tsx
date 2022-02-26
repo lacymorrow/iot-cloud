@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import Navigation from '../components/navigation/Navigation';
 import { PageWrapper, Wrapper } from '../styles/main.styles';
 import config from '../utils/config';
 
@@ -29,10 +28,6 @@ const Main = (props: MainProps) => {
               </div>
             </div>
           )}
-
-          <div className="pt-6">
-            <Navigation />
-          </div>
         </div>
 
         <Wrapper className="py-6">{props.children}</Wrapper>

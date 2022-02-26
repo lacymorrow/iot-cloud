@@ -23,6 +23,7 @@
 */
 
 import config from '../../utils/config';
+import { retryOperation } from '../../utils/utils';
 
 declare global {
   interface Window {
@@ -32,41 +33,40 @@ declare global {
 
 /* Python API -> Shell Connection */
 const pycall = (endpoint: string, params = {}) => {
-  return new Promise((resolve, reject) => {
-    if (window?.pywebview) {
-      window.pywebview.api.log(`PyCall ${endpoint}`);
-      let retries = 0;
-
-      const run = async () => {
-        window.pywebview.api.log(`retries ${retries}`);
-        /**
-         * If we already have run MAX_RETRIES once, fail on the first attempt:
-         * We don't have pywebview.
-         */
-        if (retries === config.MAX_RETRIES) {
-          const error = `< ${endpoint} has failed. You may not be in a python browser.`;
-          window.pywebview.api.log(error);
-          return reject(new Error(error));
+  return retryOperation(
+    async () => {
+      try {
+        await window.pywebview.api.log(`PyCall ${endpoint}`);
+        const res: string | { message: string } = await window.pywebview.api[
+          endpoint
+        ](params);
+        return res;
+      } catch (error) {
+        let errorMessage = `PyCall ${endpoint} failed`;
+        await window.pywebview.api.log(errorMessage);
+        if (error instanceof Error) {
+          errorMessage = error.message;
         }
-
-        try {
-          const res = await window.pywebview.api[endpoint](params);
-
-          window.pywebview.api.log(`result ${res}`);
-          return resolve(res);
-        } catch (e) {
-          setTimeout(run, config.RETRY_DELAY);
-        }
-
-        retries += 1;
-        return retries;
-      };
-
-      run();
-    }
-
-    return reject(new Error(`< ${endpoint} has failed.`));
-  });
+        throw new Error(errorMessage);
+      }
+    },
+    config.RETRY_DELAY,
+    config.MAX_RETRIES
+  )
+    .then(async (res: any) => {
+      try {
+        // Response is json {message: string}
+        const result = JSON.parse(res);
+        return result.message;
+      } catch (error) {
+        await window.pywebview.api.log(res);
+        return res;
+      }
+    })
+    .catch(async (error) => {
+      // Operation failed
+      await window.pywebview.api.log(error);
+    });
 };
 
 export default pycall;

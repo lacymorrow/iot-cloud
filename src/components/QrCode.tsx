@@ -1,35 +1,18 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
-import { Button } from 'antd';
 import QRCode from 'qrcode';
 
-import getHardwareId from '../lib/py/getHardwareId';
-
-const QrCode = () => {
-  const [id, setId] = useState('none');
-  const [log, setlog] = useState('');
+const QrCode = ({ data }: { data: string }) => {
   const qrEl = useRef(null);
 
-  const onReload = async () => {
-    const hwid = await getHardwareId();
-    setlog(`${log}id${hwid}`);
-    setId(hwid);
-
-    QRCode.toCanvas(qrEl.current, 'sample text', (error) => {
-      if (error) console.error(error);
-      console.log('success!');
+  useEffect(() => {
+    QRCode.toCanvas(qrEl.current, data, async (error) => {
+      if (error) await window.pywebview.api.log(error);
+      await window.pywebview.api.log(`Created QR: ${data}`);
     });
-    window.pywebview.api.log(`works`);
-  };
+  }, [data]);
 
-  return (
-    <div>
-      <h1>{id}</h1>
-      <Button onClick={onReload}>Reload</Button>
-      <p>{log}</p>
-      <canvas ref={qrEl}></canvas>
-    </div>
-  );
+  return <canvas ref={qrEl}></canvas>;
 };
 
 export default QrCode;

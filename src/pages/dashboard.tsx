@@ -1,4 +1,3 @@
-import { Button } from 'antd';
 import Link from 'next/link';
 
 import Meta from '../components/Meta';
@@ -18,7 +17,7 @@ const About = () => (
 
     <h3>Device Name</h3>
     <h4>Device ID</h4>
-    <Button>Toggle On/Off</Button>
+    <button>Toggle On/Off</button>
 
     <Link href="/settings">
       <a>Settings</a>
