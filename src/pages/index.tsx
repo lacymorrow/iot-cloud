@@ -12,6 +12,8 @@
 	type: any
 */
 
+import { useEffect } from 'react';
+
 import Link from 'next/link';
 
 import Meta from '../components/Meta';
@@ -23,18 +25,10 @@ const Index = () => {
   // const [imageIndex, setImageIndex] = useState(0);
   // const [active, setActive] = useState(false);
 
-  // useEffect(() => {
-  //   // Runs on mount only
-  //   setImageIndex(generateRandom(config.totalImages));
-
-  //   // Fade in clipped image
-  //   if (!active) {
-  //     setTimeout(() => {
-  //       setActive(true);
-  //     }, 2500);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  useEffect(() => {
+    window?.pywebview?.api?.init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <HomeLayout
