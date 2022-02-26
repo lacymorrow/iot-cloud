@@ -19,16 +19,15 @@ const QrCode = () => {
       if (error) console.error(error);
       console.log('success!');
     });
-    window?.pywebview?.api?.log(`works`);
+    window.pywebview.api.log(`works`);
   };
 
   return (
     <div>
       <h1>{id}</h1>
-      <canvas ref={qrEl}></canvas>
-
       <Button onClick={onReload}>Reload</Button>
       <p>{log}</p>
+      <canvas ref={qrEl}></canvas>
     </div>
   );
 };
