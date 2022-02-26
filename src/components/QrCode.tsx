@@ -11,7 +11,7 @@ const QrCode = () => {
   const qrEl = useRef(null);
 
   const onReload = async () => {
-    const hwid = await getHardwareId();
+    const hwid = getHardwareId();
     setlog(`${log}id${hwid}`);
     setId(hwid);
 

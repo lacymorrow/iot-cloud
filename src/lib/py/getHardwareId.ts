@@ -1,8 +1,10 @@
+import pycall from './pycall';
 import pycallSync from './pycallSync';
 
-const getHardwareId = () => {
+const getHardwareId = async () => {
   const hwid = pycallSync('getHardwareId');
-  return hwid;
+  const hwid2 = await pycall('getHardwareId');
+  return `${hwid} ${hwid2}`;
 };
 
 export default getHardwareId;

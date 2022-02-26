@@ -12,22 +12,28 @@
 	type: any
 */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import Link from 'next/link';
 
 import Meta from '../components/Meta';
 import QrCode from '../components/QrCode';
+import getHardwareId from '../lib/py/getHardwareId';
 import HomeLayout from '../templates/MainLayout';
 import config from '../utils/config';
 
 const Index = () => {
-  // const [imageIndex, setImageIndex] = useState(0);
-  // const [active, setActive] = useState(false);
+  const [data, setData] = useState('');
+  const [isLoading, setLoading] = useState(false);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const hwId = await getHardwareId();
+    setData(hwId);
+  };
 
   useEffect(() => {
-    window?.pywebview?.api?.init();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchData();
   }, []);
 
   return (
@@ -55,13 +61,13 @@ const Index = () => {
 
       <div className="text-center">
         {/* <h1>SmartCloud ID</h1> */}
-        <h2>
+        <h5>
           <Link href="/wifi">
             <a>WiFi Setup</a>
           </Link>
-        </h2>
-
+        </h5>
         <QrCode />
+        <p>{isLoading ? 'loading...' : data}</p>
       </div>
     </HomeLayout>
   );

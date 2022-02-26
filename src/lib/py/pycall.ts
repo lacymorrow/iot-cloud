@@ -34,25 +34,25 @@ declare global {
 const pycall = (endpoint: string, params = {}) => {
   return new Promise((resolve, reject) => {
     if (window?.pywebview) {
-      window?.pywebview?.api?.log(`PyCall ${endpoint}`);
+      window.pywebview.api.log(`PyCall ${endpoint}`);
       let retries = 0;
 
       const run = async () => {
-        window?.pywebview?.api?.log(`retries ${retries}`);
+        window.pywebview.api.log(`retries ${retries}`);
         /**
          * If we already have run MAX_RETRIES once, fail on the first attempt:
          * We don't have pywebview.
          */
         if (retries === config.MAX_RETRIES) {
           const error = `< ${endpoint} has failed. You may not be in a python browser.`;
-          window?.pywebview?.api?.log(error);
+          window.pywebview.api.log(error);
           return reject(new Error(error));
         }
 
         try {
-          const res = await window?.pywebview?.api[endpoint](params);
+          const res = await window.pywebview.api[endpoint](params);
 
-          window?.pywebview?.api?.log(`result ${res}`);
+          window.pywebview.api.log(`result ${res}`);
           return resolve(res);
         } catch (e) {
           setTimeout(run, config.RETRY_DELAY);

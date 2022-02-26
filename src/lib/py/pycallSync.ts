@@ -24,7 +24,7 @@ const pycallSync = (endpoint: string, params?: any) => {
   if (typeof window.pywebview !== 'undefined') {
     window?.pywebview?.api?.log('PycallSync');
     const result = window.pywebview.api[endpoint](params);
-    window?.pywebview?.api?.log(result?.message);
+    window.pywebview?.api.log(result.message);
     return result;
   }
   return false;
