@@ -1,5 +1,5 @@
 import Meta from '../components/Meta';
-import Layout from '../templates/MainLayout';
+import Layout from '../layouts/MainLayout';
 import config from '../utils/config';
 
 const Wifi = () => {
@@ -51,7 +51,7 @@ const Wifi = () => {
       }
     >
       <div className="block text-center ">
-        <h1>Wifi Setup</h1>
+        <h4>Wifi Setup</h4>
       </div>
     </Layout>
   );

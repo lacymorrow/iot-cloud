@@ -1,4 +1,5 @@
 import { AppProps } from 'next/app';
+import NextNProgress from 'nextjs-progressbar';
 
 import '../styles/global.css';
 
@@ -11,12 +12,12 @@ declare global {
 const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
-      {/* <NextNProgress
+      <NextNProgress
         startPosition={0.2}
         stopDelayMs={100}
         height={4}
         // showOnShallow={false}
-      /> */}
+      />
       <Component {...pageProps} />
     </>
   );

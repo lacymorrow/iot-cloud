@@ -23,17 +23,19 @@ module.exports = withBundleAnalyzer({
   //     },
   //   ];
   // },
-  webpack: (config) => {
-    // Replace React with Preact only in client production build
-    // webpack: (config, { dev, isServer }) => {
-    // if (!dev && !isServer) {
 
-    Object.assign(config.resolve.alias, {
-      react: 'preact/compat',
-      'react-dom/test-utils': 'preact/test-utils',
-      'react-dom': 'preact/compat',
-      'react/jsx-runtime': 'preact/jsx-runtime',
-    });
-    return config;
-  },
+  // PREACT
+  // webpack: (config) => {
+  //   // Replace React with Preact only in client production build
+  //   // webpack: (config, { dev, isServer }) => {
+  //   // if (!dev && !isServer) {
+
+  //   Object.assign(config.resolve.alias, {
+  //     react: 'preact/compat',
+  //     'react-dom/test-utils': 'preact/test-utils',
+  //     'react-dom': 'preact/compat',
+  //     'react/jsx-runtime': 'preact/jsx-runtime',
+  //   });
+  //   return config;
+  // },
 });

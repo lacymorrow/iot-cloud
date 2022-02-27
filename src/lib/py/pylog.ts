@@ -6,7 +6,7 @@ const pylog = async (text: string) => {
     await window.pywebview?.api?.log(text);
     return true;
   } catch (error) {
-    console.error('Logging error');
+    console.error(`Logging error ${error}`);
     return false;
   }
 };

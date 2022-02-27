@@ -24,6 +24,7 @@
 
 import config from '../../utils/config';
 import { retryOperation } from '../../utils/utils';
+import pylog from './pylog';
 
 declare global {
   interface Window {
@@ -36,14 +37,15 @@ const pycall = (endpoint: string, params = {}) => {
   return retryOperation(
     async () => {
       try {
-        await window.pywebview.api.log(`PyCall ${endpoint}`);
+        await pylog(`PyCall ${endpoint}`);
         const res: string | { message: string } = await window.pywebview.api[
           endpoint
         ](params);
+        // await pylog(`PyCall returned ${res}`);
         return res;
       } catch (error) {
-        let errorMessage = `PyCall ${endpoint} failed`;
-        await window.pywebview.api.log(errorMessage);
+        let errorMessage = `PyCall ${endpoint} failed: ${error}`;
+        // await pylog(errorMessage);
         if (error instanceof Error) {
           errorMessage = error.message;
         }
@@ -57,15 +59,21 @@ const pycall = (endpoint: string, params = {}) => {
       try {
         // Response is json {message: string}
         const result = JSON.parse(res);
+        await pylog(`PyCall returned object ${result.message}`);
         return result.message;
       } catch (error) {
-        await window.pywebview.api.log(res);
+        await pylog(`PyCall returned ${res}`);
         return res;
       }
     })
     .catch(async (error) => {
       // Operation failed
-      await window.pywebview.api.log(error);
+      let errorMessage = `PyCall ${endpoint} failed: ${error}`;
+      // await pylog(errorMessage);
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      throw new Error(errorMessage);
     });
 };
 

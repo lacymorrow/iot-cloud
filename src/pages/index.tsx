@@ -12,27 +12,34 @@
 	type: any
 */
 
-import SendIcon from '@mui/icons-material/Send';
-import LoadingButton from '@mui/lab/LoadingButton';
+import { useState, useEffect } from 'react';
+
+import { LoadingButton } from '@mui/lab';
 import Link from 'next/link';
-import useSWRImmutable from 'swr/immutable';
 
 import Meta from '../components/Meta';
 import QrCode from '../components/QrCode';
-import getHardwareId from '../lib/py/getHardwareId';
-import HomeLayout from '../templates/MainLayout';
+import Layout from '../layouts/MainLayout';
+import { getHardwareId, getIpAddress } from '../lib/py/pyapi';
 import config from '../utils/config';
 
-const fetcher = async () => {
-  const hwid = await getHardwareId();
-  return hwid;
-};
-
 const Index = () => {
-  const { data: hwId, error } = useSWRImmutable('hardware-id', fetcher);
+  const [ip, setIp] = useState('');
+  const [hwid, setHwid] = useState('');
+
+  const fetchData = async () => {
+    const id = await getHardwareId();
+    const ipAddr = await getIpAddress();
+    setIp(ipAddr);
+    setHwid(id);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
-    <HomeLayout
+    <Layout
       meta={
         <Meta
           title={`Smartcloud | ${config.title}: ${config.tagline}`}
@@ -46,20 +53,26 @@ const Index = () => {
       />
 
       <div className="flex flex-col content-center justify-center text-center">
-        <p>{error ? 'Error' : hwId || 'loading'}</p>
-        <QrCode data={hwId} />
-        <LoadingButton
-          endIcon={<SendIcon />}
-          loading={!hwId}
-          loadingPosition="end"
-          variant="contained"
-        >
-          <Link href="/wifi">
-            <a>WiFi Setup</a>
-          </Link>
-        </LoadingButton>
+        <h3>Device {hwid}</h3>
+        {ip && <p>IP: {ip}</p>}
+        <button onClick={getIpAddress}>IP</button>
+        <button onClick={getHardwareId}>HWID</button>
+        <div className="max-w-72 mx-auto flex content-center justify-center">
+          <QrCode data={hwid} />
+        </div>
+        <Link href="/wifi" passHref>
+          <LoadingButton
+            className="inline-block"
+            // endIcon={<SendIcon />}
+            loading={!hwid}
+            loadingPosition="end"
+            variant="contained"
+          >
+            WiFi Setup
+          </LoadingButton>
+        </Link>
       </div>
-    </HomeLayout>
+    </Layout>
   );
 };
 

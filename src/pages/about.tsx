@@ -1,5 +1,5 @@
 import Meta from '../components/Meta';
-import Layout from '../templates/MainLayout';
+import Layout from '../layouts/MainLayout';
 import config from '../utils/config';
 
 const About = () => (
