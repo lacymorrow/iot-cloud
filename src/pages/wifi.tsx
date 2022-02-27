@@ -1,45 +1,19 @@
+import { useEffect, useState } from 'react';
+
 import Meta from '../components/Meta';
 import Layout from '../layouts/MainLayout';
+import { getWifiNetworks } from '../lib/py/pyapi';
 import config from '../utils/config';
 
 const Wifi = () => {
-  // // const router = useRouter();
-  // const [loading, setLoading] = useState(false);
+  const [networks, setNetworks] = useState([]);
 
-  // const onSkip = () => {
-  //   // router.push('/dashboard');
-  // };
-
-  // const onFinish = async (values: any) => {
-  //   const { ssid, password } = values;
-
-  //   if (!ssid) {
-  //     // error, no ssid
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   // Schedule an event
-  //   const response = await fetch('/api/internal/set-wifi', {
-  //     body: JSON.stringify({
-  //       ssid,
-  //       password,
-  //     }),
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     method: 'POST',
-  //   });
-
-  //   setLoading(false);
-
-  //   const result = await response.json();
-  //   if (response.status === 200) {
-  //     // Redirect on success
-  //     console.log(result);
-  //   }
-  // };
+  useEffect(() => {
+    (async () => {
+      const list = await getWifiNetworks();
+      setNetworks(list);
+    })();
+  }, []);
 
   return (
     <Layout
@@ -52,6 +26,15 @@ const Wifi = () => {
     >
       <div className="block text-center ">
         <h4>Wifi Setup</h4>
+        {networks && (
+          <select>
+            {networks.map((e: string, i: number) => (
+              <option key={i} value={e}>
+                {e}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
     </Layout>
   );

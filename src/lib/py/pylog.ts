@@ -1,4 +1,4 @@
-const pylog = async (text: string) => {
+const pylog = async (text: string | number) => {
   console.log(text);
 
   try {

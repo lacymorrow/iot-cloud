@@ -33,7 +33,7 @@ declare global {
 }
 
 /* Python API -> Shell Connection */
-const pycall = (endpoint: string, params = {}) => {
+const pycall = (endpoint: string, params: any = {}) => {
   return retryOperation(
     async () => {
       try {
@@ -52,7 +52,7 @@ const pycall = (endpoint: string, params = {}) => {
         throw new Error(errorMessage);
       }
     },
-    config.RETRY_DELAY,
+    (params?.retry === false && 1) || config.RETRY_DELAY,
     config.MAX_RETRIES
   )
     .then(async (res: any) => {
