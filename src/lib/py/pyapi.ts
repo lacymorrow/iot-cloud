@@ -25,11 +25,11 @@ export const getIpAddress = () => {
 };
 
 export const getWifiInfo = async (): Promise<{
-  ssid?: string;
-  quality?: number;
+  ssid: string;
+  quality: number;
 }> => {
   const data = await pycall('getWifiInfo').catch(() => {
-    return {};
+    return { ssid: '', quality: 0 };
   });
 
   // Convert quality/70 to %/100
@@ -46,8 +46,8 @@ export const getWifiNetworks = async () => {
   });
   const networks = data
     .split('ESSID:')
-    .filter((_e: string, i: number) => i > 0 && i < data.length - 1)
-    .map((e: string) => e.trim());
+    .filter((e: string, i: number) => i > 0 && i < data.length - 1 && e.trim())
+    .map((e: string) => e.trim().replace(/^"|"$/g, '')); // remove newline and quotes
   return networks;
 };
 
