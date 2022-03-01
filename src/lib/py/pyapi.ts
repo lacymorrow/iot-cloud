@@ -46,9 +46,27 @@ export const getWifiNetworks = async () => {
   });
   const networks = data
     .split('ESSID:')
-    .filter((e: string, i: number) => i > 0 && i < data.length - 1 && e.trim())
-    .map((e: string) => e.trim().replace(/^"|"$/g, '')); // remove newline and quotes
+    // Remove newline and quotes
+    .map((e: string) => e.trim().replace(/^"|"$/g, ''))
+    // Filter only unique values
+    .filter(
+      (el: string, index: number, array: string[]) =>
+        array.indexOf(el) === index
+    )
+    // Filter falsy values
+    .filter(
+      (el: string, index: number, array: string[]) =>
+        el && index > 0 && index < array.length - 1 && el.trim()
+    );
+
   return networks;
+};
+
+export const setWifiNetwork = async (ssid: string, password: string) => {
+  const data = await pycall('setWifiNetwork', { ssid, password }).catch(() => {
+    return [];
+  });
+  return data;
 };
 
 export const update = () => {

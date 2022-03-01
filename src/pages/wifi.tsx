@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import Meta from '../components/Meta';
 import Layout from '../layouts/MainLayout';
-import { getWifiInfo, getWifiNetworks } from '../lib/py/pyapi';
+import { getWifiInfo, getWifiNetworks, setWifiNetwork } from '../lib/py/pyapi';
 import config from '../utils/config';
 
 // interface Option<T> {
@@ -39,6 +39,7 @@ const Wifi = () => {
   const [networks, setNetworks] = useState<any[]>([]);
   const [password, setPassword] = useState('');
   const [isPasswordType, setIsPasswordType] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
 
   const loadWifiInfo = async () => {
     const i = await getWifiInfo();
@@ -47,8 +48,14 @@ const Wifi = () => {
   };
 
   const loadWifiNetworks = async () => {
+    // await pycall(`Polling for WiFi data...`);
     const list = await getWifiNetworks();
     setNetworks(list);
+    // if (networks) {
+    //   setNetworks(list);
+    // } else {
+    //   setTimeout(loadWifiNetworks, 4000);
+    // }
   };
 
   const toggleShowPassword = () => setIsPasswordType(!isPasswordType);
@@ -61,13 +68,17 @@ const Wifi = () => {
     setNetwork(event.target.value);
   };
 
-  const handleSubmit = () => {
-    // await setWifiNetwork();
+  const handleSubmit = async () => {
+    const response = await setWifiNetwork(network, password);
+    console.log(response);
+    // await pylog(`Connect WiFi: ${response}`);
   };
 
   useEffect(() => {
+    // setIsLoading(true);
     loadWifiInfo();
     loadWifiNetworks();
+    // setIsLoading(false);
   }, []);
 
   return (
@@ -81,9 +92,17 @@ const Wifi = () => {
     >
       <div className="block text-center ">
         <h4>Wifi Setup</h4>
-        {info.ssid && (
+        {/* {isLoading && <p>loading...</p>} */}
+        {info.ssid ? (
+          <>
+            <p>You are connected to the internet.</p>
+            <p>
+              Current network: {info.ssid} quality: {info.quality}
+            </p>
+          </>
+        ) : (
           <p>
-            Current network: {info.ssid} quality: {info.quality}
+            Enter your WiFi name (SSID) and password to connect to your network.
           </p>
         )}
         {networks && (
