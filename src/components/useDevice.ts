@@ -1,18 +1,19 @@
 import useSWR from 'swr';
 
-import { getIpAddress } from '../lib/py/pyapi';
+import { getHardwareId } from '../lib/py/pyapi';
 
 const useDevice = () => {
-  const { data: ipData, error: ipError } = useSWR(`/ip-address`, getIpAddress);
-  // const { data: hwId } = useSWRImmutable('/hardware-id', getHardwareId);
+  // const { data: ipData, error: ipError } = useSWR(`/ip-address`, getIpAddress);
+  const { data: hwid, error } = useSWR('/hardware-id', getHardwareId, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   return {
-    device: {
-      ip: ipData,
-      // hwId,
-    },
-    isLoading: !ipError && !ipData,
-    isError: ipError,
+    hwid,
+    isLoading: !error && !hwid,
+    isError: error,
   };
 };
 

@@ -2,7 +2,7 @@ const config = {
   totalImages: 5,
   site_name: 'iot-cloud',
   email: 'me@lacymorrow.com',
-  title: 'SmartCloud',
+  title: 'Smartcloud',
   tagline: 'Firmware for iot scheduler',
   description: 'Firmware for iot scheduler',
   locale: 'en',

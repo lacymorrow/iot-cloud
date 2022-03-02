@@ -18,6 +18,18 @@ export const prefersReducedMotion = () => {
   return !mediaQuery || mediaQuery.matches;
 };
 
+// Promise with timeout; pass an async function and timeout (ms)
+export const timeout = (prom: Promise<any>, time: number) => {
+  let timer: any;
+  return Promise.race([
+    prom,
+    new Promise((_r, reject) => {
+      timer = setTimeout(() => reject(new Error(`timeout`)), time);
+      return timer;
+    }),
+  ]).finally(() => clearTimeout(timer));
+};
+
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // retryOperation(func, 1000, 5)

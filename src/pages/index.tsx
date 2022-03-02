@@ -12,32 +12,18 @@
 	type: any
 */
 
-import { useState, useEffect } from 'react';
-
 import { NavigateNext } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import Link from 'next/link';
 
 import Meta from '../components/Meta';
-import QrCode from '../components/QrCode';
+import Qr from '../components/Qr';
+import useDevice from '../components/useDevice';
 import Layout from '../layouts/MainLayout';
-import { getHardwareId, getIpAddress } from '../lib/py/pyapi';
 import config from '../utils/config';
 
 const Index = () => {
-  const [ip, setIp] = useState('');
-  const [hwid, setHwid] = useState('');
-
-  const fetchData = async () => {
-    const id = await getHardwareId();
-    const ipAddr = await getIpAddress();
-    setIp(ipAddr);
-    setHwid(id);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { hwid } = useDevice();
 
   return (
     <Layout
@@ -55,9 +41,8 @@ const Index = () => {
 
       <div className="flex flex-col content-center justify-center text-center">
         <h3>Device {hwid}</h3>
-        {ip && <p>IP: {ip}</p>}
         <div className="max-w-72 mx-auto flex content-center justify-center">
-          <QrCode data={hwid} />
+          <Qr data={hwid} />
         </div>
         <Link href="/wifi" passHref>
           <LoadingButton
