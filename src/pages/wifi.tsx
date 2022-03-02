@@ -1,5 +1,17 @@
 import { useEffect, useState } from 'react';
 
+import {
+  NavigateNext,
+  Refresh,
+  SettingsInputAntenna,
+  Visibility,
+  VisibilityOff,
+} from '@mui/icons-material';
+import { LoadingButton } from '@mui/lab';
+import { Autocomplete, Button, Grid, TextField } from '@mui/material';
+import Item from 'antd/lib/descriptions/Item';
+import Link from 'next/link';
+
 import Meta from '../components/Meta';
 import Layout from '../layouts/MainLayout';
 import { getWifiInfo, getWifiNetworks, setWifiNetwork } from '../lib/py/pyapi';
@@ -31,23 +43,26 @@ const Wifi = () => {
   //   //   [name]: value,
   //   // }));
   // };
-  const [info, setInfo] = useState<{ ssid: string; quality: number }>({
-    ssid: '',
-    quality: 0,
-  });
-  const [network, setNetwork] = useState('');
-  const [networks, setNetworks] = useState<any[]>([]);
+  const [info, setInfo] = useState<{ ssid?: string; quality?: number }>({});
+  const [network, setNetwork] = useState(-1);
+  const [networks, setNetworks] = useState<string[]>([]);
   const [password, setPassword] = useState('');
   const [isPasswordType, setIsPasswordType] = useState(true);
-  // const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isConnecting, setIsConnecting] = useState(false);
 
   const loadWifiInfo = async () => {
     const i = await getWifiInfo();
     setInfo(i);
-    setNetwork(i.ssid);
+
+    // Select currently connected network
+    if (networks.includes(i.ssid)) {
+      setNetwork(networks.indexOf(i.ssid));
+    }
   };
 
   const loadWifiNetworks = async () => {
+    setIsLoading(true);
     // await pycall(`Polling for WiFi data...`);
     const list = await getWifiNetworks();
     setNetworks(list);
@@ -56,6 +71,7 @@ const Wifi = () => {
     // } else {
     //   setTimeout(loadWifiNetworks, 4000);
     // }
+    setIsLoading(false);
   };
 
   const toggleShowPassword = () => setIsPasswordType(!isPasswordType);
@@ -69,16 +85,19 @@ const Wifi = () => {
   };
 
   const handleSubmit = async () => {
-    const response = await setWifiNetwork(network, password);
-    console.log(response);
-    // await pylog(`Connect WiFi: ${response}`);
+    setIsConnecting(true);
+    const ssid = networks[network];
+    if (ssid) {
+      const response = await setWifiNetwork(ssid, password);
+      console.log(response);
+      // await pylog(`Connect WiFi: ${response}`);
+    }
+    setIsConnecting(false);
   };
 
   useEffect(() => {
-    // setIsLoading(true);
     loadWifiInfo();
     loadWifiNetworks();
-    // setIsLoading(false);
   }, []);
 
   return (
@@ -91,11 +110,10 @@ const Wifi = () => {
       }
     >
       <div className="block text-center ">
-        <h4>Wifi Setup</h4>
-        {/* {isLoading && <p>loading...</p>} */}
-        {info.ssid ? (
+        <h4 className="my-0">Wifi Setup</h4>
+        {(!info && <p>Getting WiFi information...</p>) || info?.ssid ? (
           <>
-            <p>You are connected to the internet.</p>
+            <p>You are already connected to the internet.</p>
             <p>
               Current network: {info.ssid} quality: {info.quality}
             </p>
@@ -105,25 +123,101 @@ const Wifi = () => {
             Enter your WiFi name (SSID) and password to connect to your network.
           </p>
         )}
-        {networks && (
-          <select value={network} onChange={handleSelectChange}>
-            {networks.map((e: string, i: number) => (
-              <option key={i} value={e}>
-                {e}
-              </option>
-            ))}
-          </select>
-        )}
-        <button onClick={loadWifiNetworks}>Reload WiFi Networks</button>
-        <input
-          type={isPasswordType ? 'password' : 'text'}
-          value={password}
-          onChange={handleInput}
-        />
-        <button onClick={toggleShowPassword}>
-          {isPasswordType ? 'Show' : 'Hide'} Password
-        </button>
-        <button onClick={handleSubmit}>Connect</button>
+
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          spacing={2}
+        >
+          <Grid item xs={9}>
+            <Item>
+              {networks && (
+                <Autocomplete
+                  disablePortal
+                  disabled={isLoading || isConnecting}
+                  options={networks}
+                  sx={{ width: '100%' }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Network" />
+                  )}
+                  onChange={handleSelectChange}
+                />
+              )}
+            </Item>
+          </Grid>
+          <Grid item xs={3}>
+            <Item>
+              <LoadingButton
+                disabled={isConnecting}
+                loading={isLoading}
+                loadingPosition="start"
+                sx={{ width: '100%' }}
+                startIcon={<Refresh />}
+                onClick={loadWifiNetworks}
+                variant="outlined"
+              >
+                Refresh
+              </LoadingButton>
+            </Item>
+          </Grid>
+
+          <Grid item xs={9}>
+            <Item>
+              <TextField
+                label="Password"
+                variant="outlined"
+                value={password}
+                sx={{ width: '100%' }}
+                type={isPasswordType ? 'password' : 'text'}
+                onChange={handleInput}
+              />
+            </Item>
+          </Grid>
+          <Grid item xs={3}>
+            <Item>
+              <Button
+                disabled={isLoading || isConnecting}
+                variant="outlined"
+                sx={{ width: '100%' }}
+                startIcon={isPasswordType ? <Visibility /> : <VisibilityOff />}
+                onClick={toggleShowPassword}
+              >
+                {isPasswordType ? 'Show' : 'Hide'}
+              </Button>
+            </Item>
+          </Grid>
+
+          <Grid item xs={6}>
+            <Item>
+              <LoadingButton
+                loading={isLoading || isConnecting}
+                loadingPosition="end"
+                sx={{ width: '100%' }}
+                endIcon={<SettingsInputAntenna />}
+                variant="contained"
+                onClick={handleSubmit}
+              >
+                Connect
+              </LoadingButton>
+            </Item>
+          </Grid>
+          <Grid item xs={6}>
+            <Item>
+              <Link href="/wifi" passHref>
+                <Button
+                  disabled={!info.ssid}
+                  sx={{ width: '100%' }}
+                  endIcon={<NavigateNext />}
+                  variant="contained"
+                >
+                  Continue
+                </Button>
+              </Link>
+            </Item>
+          </Grid>
+        </Grid>
       </div>
     </Layout>
   );

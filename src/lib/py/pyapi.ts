@@ -14,13 +14,13 @@ export const pyset = (key: string, data: any) => {
 
 export const getHardwareId = () => {
   return pycall('getHardwareId').catch(() => {
-    return ''; // todo
+    return 'XXXX'; // todo
   });
 };
 
 export const getIpAddress = () => {
   return pycall('getIpAddress').catch(() => {
-    return ''; // todo
+    return 'XXXX'; // todo
   });
 };
 
@@ -42,7 +42,7 @@ export const getWifiInfo = async (): Promise<{
 
 export const getWifiNetworks = async () => {
   const data = await pycall('getWifiNetworks').catch(() => {
-    return [];
+    return 'ESSID: Castle \n ESSID: io \n';
   });
   const networks = data
     .split('ESSID:')
@@ -54,10 +54,7 @@ export const getWifiNetworks = async () => {
         array.indexOf(el) === index
     )
     // Filter falsy values
-    .filter(
-      (el: string, index: number, array: string[]) =>
-        el && index > 0 && index < array.length - 1 && el.trim()
-    );
+    .filter((el: string) => el);
 
   return networks;
 };
