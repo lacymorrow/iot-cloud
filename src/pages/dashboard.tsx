@@ -1,15 +1,24 @@
-import { Grid, Button } from '@mui/material';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import { Grid, Button, IconButton } from '@mui/material';
 import Link from 'next/link';
 
 import Meta from '../components/Meta';
-import useDevice from '../components/useDevice';
-import useNetwork from '../components/useNetwork';
+import useDevice from '../hooks/useDevice';
+import useDevicePowerStatus from '../hooks/useDevicePowerStatus';
+import useIp from '../hooks/useIp';
 import Layout from '../layouts/MainLayout';
+import { setDevicePower } from '../lib/py/pyapi';
 import config from '../utils/config';
 
 const Dashboard = () => {
   const { hwid } = useDevice();
-  const { data: ip } = useNetwork();
+  const { ip } = useIp();
+  const { status } = useDevicePowerStatus();
+
+  const handleClickPower = async () => {
+    setDevicePower(!status);
+  };
+
   return (
     <Layout
       meta={
@@ -19,11 +28,9 @@ const Dashboard = () => {
         />
       }
     >
-      <h1>Dashboard</h1>
-      <h3>Device Name</h3>
+      <h4>Dashboard</h4>
       <h4>Device {hwid}</h4>
       {ip && <p>IP: {ip}</p>}
-      <button>Toggle On/Off</button>
       <Grid
         container
         direction="row"
@@ -31,6 +38,16 @@ const Dashboard = () => {
         alignItems="center"
         spacing={2}
       >
+        <Grid item xs={6}>
+          <IconButton
+            color="primary"
+            aria-label="Power on/off device"
+            component="span"
+            onClick={handleClickPower}
+          >
+            <PowerSettingsNewIcon />
+          </IconButton>
+        </Grid>
         <Grid item xs={6}>
           <Link href="/wifi" passHref>
             <Button sx={{ width: '100%' }} variant="contained">

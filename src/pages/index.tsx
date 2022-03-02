@@ -18,7 +18,7 @@ import Link from 'next/link';
 
 import Meta from '../components/Meta';
 import Qr from '../components/Qr';
-import useDevice from '../components/useDevice';
+import useDevice from '../hooks/useDevice';
 import Layout from '../layouts/MainLayout';
 import config from '../utils/config';
 

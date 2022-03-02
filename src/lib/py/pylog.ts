@@ -1,14 +1,19 @@
+import config from '../../utils/config';
 import { timeout } from '../../utils/utils';
 
 const pylog = async (text: string | number) => {
-  console.log(`[Pylog] ${text}`);
-  await timeout(
-    (async () => {
-      await window.pywebview?.api?.log(text);
-      return true;
-    })(),
-    1000
-  ).catch((error) => console.log(`[Pylog] ${text} error: ${error}`));
+  if (window.pywebview?.api?.log) {
+    console.log(`[Pylog] ${text}`);
+    await timeout(
+      (async () => {
+        await window.pywebview.api.log(text);
+        return true;
+      })(),
+      config.TIMEOUT
+    ).catch((error) => console.log(`[Pylog] ${text} error: ${error}`));
+  } else {
+    console.log(`[Pylog Error] ${text}`);
+  }
 };
 
 export default pylog;

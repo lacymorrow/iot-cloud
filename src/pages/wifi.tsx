@@ -13,16 +13,15 @@ import { Autocomplete, Button, Grid, TextField } from '@mui/material';
 import Link from 'next/link';
 
 import Meta from '../components/Meta';
+import useWifiInfo from '../hooks/useWifiInfo';
 import Layout from '../layouts/MainLayout';
-import { getWifiInfo, getWifiNetworks, setWifiNetwork } from '../lib/py/pyapi';
+import {
+  getWifiNetworks,
+  setWifiNetwork,
+  waitForNetwork,
+} from '../lib/py/pyapi';
 import pylog from '../lib/py/pylog';
 import config from '../utils/config';
-
-// interface Option<T> {
-//   key: string;
-//   value: T;
-//   label: string;
-// }
 
 const Wifi = () => {
   // const [state, setState] = useReducer<Reducer<StateType, Partial<StateType>>>(
@@ -44,8 +43,9 @@ const Wifi = () => {
   //   //   [name]: value,
   //   // }));
   // };
+
+  const { data: info, mutate, isError } = useWifiInfo();
   const selectRef = useRef<HTMLSelectElement>(null);
-  const [info, setInfo] = useState<{ ssid?: string; quality?: number }>({});
   const [network, setNetwork] = useState(-1);
   const [networks, setNetworks] = useState<string[]>([]);
   const [password, setPassword] = useState('');
@@ -55,7 +55,7 @@ const Wifi = () => {
 
   const syncNetworks = () => {
     // Select currently connected network
-    if (info.ssid && networks.includes(info.ssid)) {
+    if (info?.ssid && networks.includes(info.ssid)) {
       setNetwork(networks.indexOf(info.ssid));
     }
   };
@@ -69,12 +69,6 @@ const Wifi = () => {
     setIsLoading(false);
     syncNetworks();
     selectRef.current?.focus();
-  };
-
-  const loadWifiInfo = async () => {
-    const i = await getWifiInfo();
-    setInfo(i);
-    syncNetworks();
   };
 
   const toggleShowPassword = () => setIsPasswordType(!isPasswordType);
@@ -91,14 +85,19 @@ const Wifi = () => {
     setIsConnecting(true);
     const ssid = networks[network];
     if (ssid) {
-      const response = await setWifiNetwork(ssid, password);
-      await pylog(`Connect WiFi: ${response}`);
+      await setWifiNetwork(ssid, password)
+        .then((response) => pylog(`Connect WiFi: ${response}`))
+        .catch(async (error) => {
+          await pylog(`WiFi Error: ${error}`);
+        });
+      await waitForNetwork();
+      mutate();
+      // TODO: CONFIRMATION
     }
     setIsConnecting(false);
   };
 
   useEffect(() => {
-    loadWifiInfo();
     loadWifiNetworks();
   }, []);
 
@@ -112,17 +111,14 @@ const Wifi = () => {
       }
     >
       <div className="block text-center ">
-        <h4 className="my-0" onClick={loadWifiInfo}>
-          Wifi Setup
-        </h4>
-        {(!info && <p>Getting WiFi information...</p>) || info?.ssid ? (
-          <>
-            <h3>
-              {info.ssid} {info.quality} <WifiIcon />
-            </h3>
-          </>
-        ) : (
+        <h4 className="my-0">Wifi Setup</h4>
+        {(!info && !isError && <p>Getting WiFi information...</p>) ||
+        isError ? (
           <p>Enter your WiFi name (SSID) and password to connect.</p>
+        ) : (
+          <h3>
+            {info?.ssid} {info?.quality} <WifiIcon />
+          </h3>
         )}
 
         <Grid
@@ -196,7 +192,7 @@ const Wifi = () => {
           <Grid item xs={6}>
             <Link href="/dashboard" passHref>
               <Button
-                disabled={!info.ssid}
+                disabled={!info?.ssid}
                 sx={{ width: '100%' }}
                 endIcon={<NavigateNext />}
                 variant="contained"

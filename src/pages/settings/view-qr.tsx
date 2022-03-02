@@ -4,18 +4,18 @@ import Link from 'next/link';
 
 import Meta from '../../components/Meta';
 import Qr from '../../components/Qr';
-import useDevice from '../../components/useDevice';
+import useDevice from '../../hooks/useDevice';
 import Layout from '../../layouts/MainLayout';
 import config from '../../utils/config';
 
-const Pair = () => {
+const ViewQr = () => {
   const { hwid } = useDevice();
 
   return (
     <Layout
       meta={
         <Meta
-          title={`Pair | ${config.title}: ${config.tagline}`}
+          title={`ViewQr | ${config.title}: ${config.tagline}`}
           description={config.description}
         />
       }
@@ -43,4 +43,4 @@ const Pair = () => {
   );
 };
 
-export default Pair;
+export default ViewQr;

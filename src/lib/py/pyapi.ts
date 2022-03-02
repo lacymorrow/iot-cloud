@@ -1,3 +1,6 @@
+import { mutate } from 'swr';
+
+import { retryOperation, timeout } from '../../utils/utils';
 import pycall from './pycall';
 
 export const pyget = (key: string) => {
@@ -25,6 +28,11 @@ export const getHardwareId = () => {
     }
     return '';
   });
+};
+
+export const getIsNetworkConnected = async () => {
+  const data = await pycall('checkWifiConnection');
+  return data;
 };
 
 export const getIpAddress = () => {
@@ -74,11 +82,24 @@ export const getWifiNetworks = async () => {
   return networks;
 };
 
+export const setDevicePower = async (status: boolean) => {
+  if (status) {
+    // turn off
+    await pyset('device_power_status', 'off');
+  } else {
+    // turn on
+    await pyset('device_power_status', 'on');
+  }
+  mutate('/device-power');
+};
+
 export const setWifiNetwork = async (ssid: string, password: string) => {
-  const data = await pycall('setWifiNetwork', { ssid, password }).catch(() => {
-    return [];
-  });
+  const data = await pycall('setWifiNetwork', { ssid, password });
   return data;
+};
+
+export const waitForNetwork = async () => {
+  return retryOperation(await timeout(getIsNetworkConnected(), 10000), 3000, 5);
 };
 
 export const update = () => {

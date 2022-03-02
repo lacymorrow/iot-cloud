@@ -7,8 +7,9 @@ const config = {
   description: 'Firmware for iot scheduler',
   locale: 'en',
   errorMessage: '',
-  MAX_RETRIES: 10,
-  RETRY_DELAY: 500,
+  MAX_RETRIES: 5,
+  RETRY_DELAY: 1000,
+  TIMEOUT: 1500,
 };
 
 config.errorMessage = `There was an error, please email <a href="mailto:${config.email}">${config.email}</a>`;

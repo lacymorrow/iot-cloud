@@ -38,42 +38,47 @@ const pycall = (endpoint: string, params: any = {}) => {
     async () => {
       try {
         await pylog(`PyCall ${endpoint}`);
-        const res: string | { message: string } = await window.pywebview.api[
-          endpoint
-        ](params);
-        return res;
+        const response: string | { message: string } =
+          await window.pywebview.api[endpoint](params)
+            .then(async (res: any) => {
+              try {
+                // Response is json {message: string}
+                const result = JSON.parse(res);
+                await pylog(`PyCall returned object ${result.message}`);
+                return result.message;
+              } catch (error) {
+                await pylog(`PyCall returned ${res}`);
+                return res;
+              }
+            })
+            .then((res: any) => {
+              // Response contained an error
+              if (res.error) {
+                throw res.error;
+              }
+              return res;
+            });
+        return response;
       } catch (error) {
         let errorMessage = `${endpoint} failed: ${error}`;
         if (error instanceof Error) {
           errorMessage = error.message;
         }
-        await pylog(`Pycall inner error (retrying): ${errorMessage}`);
+        await pylog(`Pycall error (retrying): ${errorMessage}`);
         throw new Error(errorMessage);
       }
     },
     (params?.retry === false && 1) || config.RETRY_DELAY,
     config.MAX_RETRIES
-  )
-    .then(async (res: any) => {
-      try {
-        // Response is json {message: string}
-        const result = JSON.parse(res);
-        await pylog(`PyCall returned object ${result.message}`);
-        return result.message;
-      } catch (error) {
-        await pylog(`PyCall returned ${res}`);
-        return res;
-      }
-    })
-    .catch(async (error) => {
-      // Operation failed
-      let errorMessage = `${endpoint} failed: ${error}`;
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      await pylog(`Pycall Error: ${errorMessage}`);
-      throw new Error(errorMessage);
-    });
+  ).catch(async (error) => {
+    // Operation failed
+    let errorMessage = `${endpoint} failed: ${error}`;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    await pylog(`Pycall fatal error: ${errorMessage}`);
+    throw new Error(errorMessage);
+  });
 };
 
 export default pycall;
