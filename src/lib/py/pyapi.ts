@@ -2,25 +2,37 @@ import pycall from './pycall';
 
 export const pyget = (key: string) => {
   return pycall('get', { key }).catch(() => {
-    return 'Error'; // todo
+    if (process.env.NODE_ENV === 'development') {
+      return '*****';
+    }
+    return '';
   });
 };
 
 export const pyset = (key: string, data: any) => {
   return pycall('set', { key, data }).catch(() => {
-    return 'Error'; // todo
+    if (process.env.NODE_ENV === 'development') {
+      return '*****';
+    }
+    return '';
   });
 };
 
 export const getHardwareId = () => {
   return pycall('getHardwareId').catch(() => {
-    return 'XXXX'; // todo
+    if (process.env.NODE_ENV === 'development') {
+      return '*****';
+    }
+    return '';
   });
 };
 
 export const getIpAddress = () => {
   return pycall('getIpAddress').catch(() => {
-    return 'XXXX'; // todo
+    if (process.env.NODE_ENV === 'development') {
+      return '*****';
+    }
+    return '';
   });
 };
 
@@ -42,7 +54,10 @@ export const getWifiInfo = async (): Promise<{
 
 export const getWifiNetworks = async () => {
   const data = await pycall('getWifiNetworks').catch(() => {
-    return 'ESSID: Castle \n ESSID: io \n';
+    if (process.env.NODE_ENV === 'development') {
+      return 'ESSID: Castle \n ESSID: io \n';
+    }
+    return '';
   });
   const networks = data
     .split('ESSID:')
@@ -74,6 +89,6 @@ export const update = () => {
 
 export const removeAllStorage = () => {
   return pycall('removeAllStorage').catch(() => {
-    return 'Error'; // todo
+    return 'Error removing storage'; // todo
   });
 };
