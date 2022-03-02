@@ -14,7 +14,7 @@ type MainProps = {
 const Main = (props: MainProps) => {
   const { pathname } = useRouter();
   return (
-    <PageWrapper className="p-2 border-2 border-black">
+    <PageWrapper className="h-[320px] w-[480px] border-2 border-black">
       {props.meta}
 
       <div className="max-w-screen-sm w-full mx-auto relative">
