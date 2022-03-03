@@ -1,4 +1,5 @@
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import PowerSettingsNewOutlinedIcon from '@mui/icons-material/PowerSettingsNewOutlined';
 import { Grid, Button, IconButton } from '@mui/material';
 import Link from 'next/link';
 
@@ -39,13 +40,18 @@ const Dashboard = () => {
         spacing={2}
       >
         <Grid item xs={6}>
+          {status ? 'ON' : 'OFF'}
           <IconButton
             color="primary"
+            size="large"
             aria-label="Power on/off device"
-            component="span"
             onClick={handleClickPower}
           >
-            <PowerSettingsNewIcon />
+            {status ? (
+              <PowerSettingsNewIcon />
+            ) : (
+              <PowerSettingsNewOutlinedIcon />
+            )}
           </IconButton>
         </Grid>
         <Grid item xs={6}>

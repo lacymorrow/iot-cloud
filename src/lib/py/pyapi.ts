@@ -1,19 +1,34 @@
 import { mutate } from 'swr';
 
-import { retryOperation, timeout } from '../../utils/utils';
+import config from '../../utils/config';
+import { timeout } from '../../utils/utils';
 import pycall from './pycall';
 
+// log errors
+// ERROR HANDLING
+
 export const pyget = (key: string) => {
-  return pycall('get', { key }).catch(() => {
-    if (process.env.NODE_ENV === 'development') {
-      return '*****';
-    }
-    return '';
-  });
+  return pycall('get', { key })
+    .then((res) => {
+      console.log(`Got: `, res);
+      try {
+        return JSON.parse(res);
+      } catch (_error) {
+        return res;
+      }
+    })
+    .catch((error) => {
+      console.log(`pyget error: ${error}`);
+      if (process.env.NODE_ENV === 'development') {
+        return '*****';
+      }
+      return '';
+    });
 };
 
 export const pyset = (key: string, data: any) => {
-  return pycall('set', { key, data }).catch(() => {
+  return pycall('set', { key, data }).catch((error) => {
+    console.log(`Pyset error: `, error);
     if (process.env.NODE_ENV === 'development') {
       return '*****';
     }
@@ -31,7 +46,11 @@ export const getHardwareId = () => {
 };
 
 export const getIsNetworkConnected = async () => {
-  const data = await pycall('checkWifiConnection');
+  const data = await timeout(
+    (() => pycall('checkWifiConnection'))(),
+    config.NETWORK_TIMEOUT
+  );
+
   return data;
 };
 
@@ -44,13 +63,15 @@ export const getIpAddress = () => {
   });
 };
 
+export const getSavedNetworks = () => {
+  return pyget('network_list');
+};
+
 export const getWifiInfo = async (): Promise<{
   ssid: string;
   quality: number;
 }> => {
-  const data = await pycall('getWifiInfo').catch(() => {
-    return { ssid: '', quality: 0 };
-  });
+  const data = await pycall('getWifiInfo');
 
   // Convert quality/70 to %/100
   const quality = Math.round((Number.parseInt(data.quality, 10) / 70) * 100);
@@ -65,6 +86,7 @@ export const getWifiNetworks = async () => {
     if (process.env.NODE_ENV === 'development') {
       return 'ESSID: Castle \n ESSID: io \n';
     }
+    // TODO: FATAL ERROR - rebooot?
     return '';
   });
   const networks = data
@@ -84,13 +106,16 @@ export const getWifiNetworks = async () => {
 
 export const setDevicePower = async (status: boolean) => {
   if (status) {
-    // turn off
-    await pyset('device_power_status', 'off');
-  } else {
     // turn on
     await pyset('device_power_status', 'on');
+  } else {
+    // turn off
+    await pyset('device_power_status', 'off');
   }
-  mutate('/device-power');
+
+  setTimeout(() => {
+    console.log(mutate('/device-power', status));
+  }, config.TIMEOUT);
 };
 
 export const setWifiNetwork = async (ssid: string, password: string) => {
@@ -98,14 +123,24 @@ export const setWifiNetwork = async (ssid: string, password: string) => {
   return data;
 };
 
-export const waitForNetwork = async () => {
-  return retryOperation(await timeout(getIsNetworkConnected(), 10000), 3000, 5);
+export const setNewSavedNetwork = async (ssid: string, password: string) => {
+  const list = await pyget('network_list');
+  const data =
+    typeof list === 'object'
+      ? await pyset('network_list', { ...list, [ssid]: password })
+      : await pyset('network_list', { [ssid]: password });
+
+  return data;
 };
 
 export const update = () => {
   return pycall('update', { retry: false }).catch(() => {
     return 'Error Updating';
   });
+};
+
+export const removeSavedNetworks = () => {
+  return pyset('network_list', []);
 };
 
 export const removeAllStorage = () => {
