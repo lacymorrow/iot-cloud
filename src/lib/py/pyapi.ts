@@ -20,7 +20,7 @@ export const pyget = (key: string) => {
     .catch((error) => {
       console.log(`pyget error: ${error}`);
       if (process.env.NODE_ENV === 'development') {
-        return '*****';
+        return 'dev';
       }
       return '';
     });
@@ -30,7 +30,7 @@ export const pyset = (key: string, data: any) => {
   return pycall('set', { key, data }).catch((error) => {
     console.log(`Pyset error: `, error);
     if (process.env.NODE_ENV === 'development') {
-      return '*****';
+      return 'dev';
     }
     return '';
   });
@@ -39,7 +39,7 @@ export const pyset = (key: string, data: any) => {
 export const getHardwareId = () => {
   return pycall('getHardwareId').catch(() => {
     if (process.env.NODE_ENV === 'development') {
-      return '*****';
+      return 'dev';
     }
     return '';
   });
@@ -47,7 +47,7 @@ export const getHardwareId = () => {
 
 export const getIsNetworkConnected = async () => {
   const data = await timeout(
-    (() => pycall('checkWifiConnection'))(),
+    (() => pycall('checkWifiConnection').catch(() => { return false }))(),
     config.NETWORK_TIMEOUT
   );
 
@@ -57,7 +57,7 @@ export const getIsNetworkConnected = async () => {
 export const getIpAddress = () => {
   return pycall('getIpAddress').catch(() => {
     if (process.env.NODE_ENV === 'development') {
-      return '*****';
+      return 'dev';
     }
     return '';
   });
@@ -83,10 +83,11 @@ export const getWifiInfo = async (): Promise<{
 
 export const getWifiNetworks = async () => {
   const data = await pycall('getWifiNetworks').catch(() => {
+    // MOCK DATA
     if (process.env.NODE_ENV === 'development') {
       return 'ESSID: Castle \n ESSID: io \n';
     }
-    // TODO: FATAL ERROR - rebooot?
+    // TODO: FATAL ERROR - reboot?
     return '';
   });
   const networks = data
