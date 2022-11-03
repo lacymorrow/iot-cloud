@@ -67,6 +67,15 @@ export const getSavedNetworks = () => {
   return pyget('network_list');
 };
 
+export const getSensorHygrometer = () => {
+  return pycall('getSensorHygrometer').catch(() => {
+    if (process.env.NODE_ENV === 'development') {
+      return 'dev'+ Math.round( Math.random()*100 );
+    }
+    return ''
+  });
+};
+
 export const getWifiInfo = async (): Promise<{
   ssid: string;
   quality: number;
