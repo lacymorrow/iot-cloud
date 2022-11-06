@@ -47,7 +47,10 @@ export const getHardwareId = () => {
 
 export const getIsNetworkConnected = async () => {
   const data = await timeout(
-    (() => pycall('checkWifiConnection').catch(() => { return false }))(),
+    (() =>
+      pycall('checkWifiConnection').catch(() => {
+        return false;
+      }))(),
     config.NETWORK_TIMEOUT
   );
 
@@ -65,6 +68,15 @@ export const getIpAddress = () => {
 
 export const getSavedNetworks = () => {
   return pyget('network_list');
+};
+
+export const getTemperatureHumidity = async (): Promise<{
+  temperature: string;
+  humidity: String;
+}> => {
+  const data = await pycall('getTemperatureHumidity');
+
+  return data;
 };
 
 export const getWifiInfo = async (): Promise<{

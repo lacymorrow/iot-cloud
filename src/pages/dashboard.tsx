@@ -1,6 +1,7 @@
+import { QrCode2, SignalWifiBadTwoTone } from '@mui/icons-material';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import PowerSettingsNewOutlinedIcon from '@mui/icons-material/PowerSettingsNewOutlined';
-import { Grid, Button, IconButton } from '@mui/material';
+import { Grid, IconButton } from '@mui/material';
 import Link from 'next/link';
 
 import Meta from '../components/Meta';
@@ -29,22 +30,36 @@ const Dashboard = () => {
         />
       }
     >
-      <h4>Dashboard</h4>
-      <h4>Device {hwid}</h4>
-      {ip && <p>IP: {ip}</p>}
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        spacing={2}
-      >
-        <Grid item xs={6}>
-          {status ? 'ON' : 'OFF'}
+      <Meta
+        title={`Dashboard | ${config.title}: ${config.tagline}`}
+        description={config.description}
+      />
+
+      <Grid container spacing={2}>
+        <Grid item xs={4} textAlign="center">
+          <h3>{hwid || 'Device'}</h3>
+        </Grid>
+        <Grid item xs={4} textAlign="center">
+          <p>Device is {status ? 'on' : 'off'}</p>
+        </Grid>
+        <Grid item xs={4} textAlign="center">
+          <h3>{(ip && `Online ${ip}`) || 'Offline'}</h3>
+        </Grid>
+      </Grid>
+
+      {/* QR Button, Power button, Wifi Disconnected button */}
+      <Grid container spacing={2}>
+        <Grid item xs={4} textAlign="center">
+          <Link href="/settings/view-qr" passHref>
+            <IconButton color="primary" aria-label="qr code">
+              <QrCode2 />
+            </IconButton>
+          </Link>
+        </Grid>
+        <Grid item xs={4} textAlign="center">
           <IconButton
             color="primary"
-            size="large"
-            aria-label="Power on/off device"
+            aria-label="power"
             onClick={handleClickPower}
           >
             {status ? (
@@ -54,28 +69,31 @@ const Dashboard = () => {
             )}
           </IconButton>
         </Grid>
-        <Grid item xs={6}>
-          <Link href="/wifi" passHref>
-            <Button sx={{ width: '100%' }} variant="contained">
-              WiFi
-            </Button>
-          </Link>
-        </Grid>
-        <Grid item xs={6}>
-          <Link href="/settings/about" passHref>
-            <Button sx={{ width: '100%' }} variant="outlined">
-              About
-            </Button>
-          </Link>
-        </Grid>
-        <Grid item xs={6}>
-          <Link href="/settings/view-qr" passHref>
-            <Button sx={{ width: '100%' }} variant="outlined">
-              View QR
-            </Button>
-          </Link>
+        <Grid item xs={4} textAlign="center">
+          {ip && (
+            <IconButton color="primary" aria-label="qr code">
+              <SignalWifiBadTwoTone />
+            </IconButton>
+          )}
         </Grid>
       </Grid>
+
+      <Grid container spacing={2}>
+        <Grid item xs={4}>
+          <p>
+            Humidity: <span>0</span>
+            Temperature: <span>0</span> C
+          </p>
+        </Grid>
+        <Grid item xs={4}>
+          <p>
+            Humidity: <span>0</span>
+            Temperature: <span>0</span> C
+          </p>
+        </Grid>
+        <Grid item xs={4}></Grid>
+      </Grid>
+
       {/* control
 			- on/off
 			- Sensor readout
