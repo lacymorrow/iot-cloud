@@ -10,9 +10,7 @@ const Main = (props: MainProps) => {
     <div className="h-[320px] w-[480px] border-solid border-2 border-black p-2">
       {props.meta}
 
-      <div className="w-full relative">
-        <div>{props.children}</div>
-      </div>
+      <div className="h-full w-full relative">{props.children}</div>
     </div>
   );
 };
