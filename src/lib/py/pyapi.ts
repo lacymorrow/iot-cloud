@@ -6,8 +6,14 @@ import pycall from './pycall';
 
 // log errors
 // ERROR HANDLING
-
 export const pyget = (key: string) => {
+  // DEBUG
+  if (process.env.NODE_ENV === 'development') {
+    const item = JSON.parse(localStorage.getItem(key) || '');
+    console.log(`Dev Pyget Got: ${key}, ${item}`);
+    return item;
+  }
+
   return pycall('get', { key })
     .then((res) => {
       console.log(`Got: `, res);
@@ -19,20 +25,46 @@ export const pyget = (key: string) => {
     })
     .catch((error) => {
       console.log(`pyget error: ${error}`);
-      if (process.env.NODE_ENV === 'development') {
-        return 'dev';
-      }
       return '';
     });
 };
 
 export const pyset = (key: string, data: any) => {
+  console.log(`Setting: ${key}, ${data}`);
+
   return pycall('set', { key, data }).catch((error) => {
     console.log(`Pyset error: `, error);
     if (process.env.NODE_ENV === 'development') {
-      return 'dev';
+      return localStorage.setItem(key, JSON.stringify(data));
     }
     return '';
+  });
+};
+
+export const deviceOn = () => {
+  return pycall('deviceOn').catch(() => {
+    if (process.env.NODE_ENV === 'development') {
+      return localStorage.setItem('deviceStatus', '1');
+    }
+    return 'error';
+  });
+};
+
+export const deviceOff = () => {
+  return pycall('deviceOff').catch(() => {
+    if (process.env.NODE_ENV === 'development') {
+      return localStorage.setItem('deviceStatus', '0');
+    }
+    return 'error';
+  });
+};
+
+export const getDeviceStatus = () => {
+  return pycall('getDeviceStatus').catch(() => {
+    if (process.env.NODE_ENV === 'development') {
+      return localStorage.getItem('deviceStatus');
+    }
+    return 'error';
   });
 };
 
@@ -83,7 +115,12 @@ export const getWifiInfo = async (): Promise<{
   ssid: string;
   quality: number;
 }> => {
-  const data = await pycall('getWifiInfo');
+  const data = await pycall('getWifiInfo').catch(() => {
+    if (process.env.NODE_ENV === 'development') {
+      return { ssid: 'dev', quality: 0 };
+    }
+    return { ssid: 'error', quality: 0 };
+  });
 
   // Convert quality/70 to %/100
   const quality = Math.round((Number.parseInt(data.quality, 10) / 70) * 100);
