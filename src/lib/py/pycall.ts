@@ -37,6 +37,14 @@ const pycall = (endpoint: string, params: any = {}) => {
   return retryOperation(
     async () => {
       try {
+        if (process.env.NODE_ENV === 'development') {
+          throw new Error('Not running in production, skipping pycall');
+        }
+
+        if (!window.pywebview?.api?.[endpoint]) {
+          throw new Error('API endpoint not found');
+        }
+
         await pylog(`PyCall ${endpoint}`, params);
         const response: string | { message: string } =
           await window.pywebview.api[endpoint](params)
@@ -65,7 +73,7 @@ const pycall = (endpoint: string, params: any = {}) => {
       }
     },
     config.RETRY_DELAY,
-    config.MAX_RETRIES
+    process.env.NODE_ENV === 'development' ? 1 : config.MAX_RETRIES // 1 retry in dev
   ).catch(async (error) => {
     // Operation failed
     let errorMessage = `${endpoint} - ${error}`;

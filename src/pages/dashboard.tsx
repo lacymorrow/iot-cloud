@@ -91,12 +91,18 @@ const Dashboard = () => {
 
         <Grid container spacing={2}>
           <Grid item xs={4}>
-            <p>
-              {tempHum}
-              Humidity: <span>0</span>
-              <br />
-              Temperature: <span>0</span> C
-            </p>
+            {tempHum && (
+              <div>
+                <p>
+                  Humidity: <span>{tempHum?.humidity}</span>
+                  <em>%</em>
+                </p>
+                <p>
+                  Temperature: <span>{tempHum?.temperature}</span>
+                  <em>C</em>
+                </p>
+              </div>
+            )}
           </Grid>
           <Grid item xs={4}></Grid>
           <Grid item xs={4}>
@@ -104,17 +110,14 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </div>
-      {/* control
-			- on/off
-			- Sensor readout
-			- upcoming schedule
-			- View QR
-
+      {/*
 		Settings
 			- wifi
 			- device
 		- about
-		- Pairing */}
+		- Pairing
+    - qr
+    - schedule */}
     </Layout>
   );
 };

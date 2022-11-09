@@ -34,7 +34,7 @@ const Index = () => {
         clearInterval(interval);
         setMessage('starting...');
         router.push('/dashboard');
-      }, 5000);
+      }, 50000);
     }
   }, [hwid]);
 
