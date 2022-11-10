@@ -6,8 +6,14 @@ import pycall from './pycall';
 
 // log errors
 // ERROR HANDLING
-
 export const pyget = (key: string) => {
+  // DEBUG
+  if (process.env.NODE_ENV === 'development') {
+    const item = JSON.parse(localStorage.getItem(key) || '');
+    console.log(`Dev Pyget Got: ${key}, ${item}`);
+    return item;
+  }
+
   return pycall('get', { key })
     .then((res) => {
       console.log(`Got: `, res);
@@ -19,27 +25,58 @@ export const pyget = (key: string) => {
     })
     .catch((error) => {
       console.log(`pyget error: ${error}`);
-      if (process.env.NODE_ENV === 'development') {
-        return 'dev';
-      }
       return '';
     });
 };
 
 export const pyset = (key: string, data: any) => {
+  console.log(`Setting: ${key}, ${data}`);
+
   return pycall('set', { key, data }).catch((error) => {
-    console.log(`Pyset error: `, error);
     if (process.env.NODE_ENV === 'development') {
-      return 'dev';
+      return localStorage.setItem(key, JSON.stringify(data));
     }
+    console.log(`Pyset error: `, error);
     return '';
+  });
+};
+
+export const deviceOn = () => {
+  return pycall('deviceOn').catch(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Dev deviceOn> Using local storage');
+      return localStorage.setItem('deviceStatus', '1');
+    }
+    return 'error';
+  });
+};
+
+export const deviceOff = () => {
+  return pycall('deviceOff').catch(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Dev deviceOff> Using local storage');
+      return localStorage.setItem('deviceStatus', '0');
+    }
+    return 'error';
+  });
+};
+
+export const getDeviceStatus = () => {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Dev getDeviceStatus> Getting status from local storage');
+    return localStorage.getItem('deviceStatus');
+  }
+
+  return pycall('getDeviceStatus').catch(() => {
+    return 'error';
   });
 };
 
 export const getHardwareId = () => {
   return pycall('getHardwareId').catch(() => {
     if (process.env.NODE_ENV === 'development') {
-      return 'dev';
+      console.log('Dev getHardwareId> HWID set to 123456');
+      return '123456';
     }
     return '';
   });
@@ -60,7 +97,8 @@ export const getIsNetworkConnected = async () => {
 export const getIpAddress = () => {
   return pycall('getIpAddress').catch(() => {
     if (process.env.NODE_ENV === 'development') {
-      return 'dev';
+      console.log('Dev getIpAddress> IP set to 000.000.000.000');
+      return '000.000.000.000';
     }
     return '';
   });
@@ -74,7 +112,16 @@ export const getTemperatureHumidity = async (): Promise<{
   temperature: string;
   humidity: String;
 }> => {
-  const data = await pycall('getTemperatureHumidity');
+  const data = await pycall('getTemperatureHumidity').catch(() => {
+    if (process.env.NODE_ENV === 'development') {
+      return {
+        temperature: Math.trunc(Math.random() * 100),
+        humidity: Math.trunc(Math.random() * 100),
+      };
+    }
+
+    return { temperature: '', humidity: '' };
+  });
 
   return data;
 };
@@ -83,7 +130,12 @@ export const getWifiInfo = async (): Promise<{
   ssid: string;
   quality: number;
 }> => {
-  const data = await pycall('getWifiInfo');
+  const data = await pycall('getWifiInfo').catch(() => {
+    if (process.env.NODE_ENV === 'development') {
+      return { ssid: 'dev', quality: 0 };
+    }
+    return { ssid: 'error', quality: 0 };
+  });
 
   // Convert quality/70 to %/100
   const quality = Math.round((Number.parseInt(data.quality, 10) / 70) * 100);
@@ -118,17 +170,21 @@ export const getWifiNetworks = async () => {
 };
 
 export const setDevicePower = async (status: boolean) => {
+  console.log(`Setting device power to ${status}`);
   if (status) {
     // turn on
-    await pyset('device_power_status', 'on');
+    console.log(await deviceOn());
   } else {
     // turn off
-    await pyset('device_power_status', 'off');
+    console.log(await deviceOff());
   }
 
-  setTimeout(() => {
-    console.log(mutate('/device-power', status));
-  }, config.TIMEOUT);
+  // TODO: Remove timeout
+  console.log(`setDevicePower> Mutating deviceStatus`);
+  await mutate('/device-power', status);
+  // setTimeout(async () => {
+  //   console.log(await mutate('/device-power', status));
+  // }, config.RETRY_DELAY);
 };
 
 export const setWifiNetwork = async (ssid: string, password: string) => {
@@ -158,6 +214,10 @@ export const removeSavedNetworks = () => {
 
 export const removeAllStorage = () => {
   return pycall('removeAllStorage').catch(() => {
+    if (process.env.NODE_ENV === 'development') {
+      return localStorage.clear();
+    }
+
     return 'Error removing storage'; // todo
   });
 };
