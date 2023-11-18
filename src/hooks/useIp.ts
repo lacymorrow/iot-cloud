@@ -4,10 +4,10 @@ import { getIpAddress } from '../lib/py/pyapi';
 
 const useIp = (params?: any) => {
     const { data: ip, error } = useSWR(`/ip-address`, getIpAddress, {
-        refreshWhenHidden: false,
-        refreshWhenOffline: false,
+        refreshWhenHidden: true,
+        refreshWhenOffline: true,
         revalidateIfStale: true,
-        revalidateOnFocus: false,
+        revalidateOnFocus: true,
         revalidateOnReconnect: true,
         ...params,
     });

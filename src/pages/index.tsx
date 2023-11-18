@@ -24,7 +24,7 @@ const Index = () => {
     /* message countdown from 5 then redirect to /dashboard */
     useEffect(() => {
         if (hwid) {
-            let count = 5;
+            let count = 2;
             const interval = setInterval(() => {
                 setMessage(`Starting in ${count} seconds...`);
                 count -= 1;
@@ -33,7 +33,7 @@ const Index = () => {
                 clearInterval(interval);
                 setMessage('starting...');
                 router.push('/dashboard');
-            }, 5000);
+            }, count * 1000);
         }
     }, [hwid, router]);
 
