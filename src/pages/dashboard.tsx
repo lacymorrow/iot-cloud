@@ -1,10 +1,10 @@
 import {
-  AcUnit,
-  Cable,
-  QrCode2,
-  Thermostat,
-  Wifi,
-  WifiOff,
+    AcUnit,
+    Cable,
+    QrCode2,
+    Thermostat,
+    Wifi,
+    WifiOff,
 } from '@mui/icons-material';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { PowerIcon, PowerOffIcon } from 'lucide-react';
@@ -12,11 +12,11 @@ import Link from 'next/link';
 
 import { buttonVariants } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
@@ -29,114 +29,124 @@ import useSensor from '../hooks/useSensor';
 import { setDevicePower } from '../lib/py/pyapi';
 
 const Dashboard = () => {
-  const { data: tempHum } = useSensor();
-  const { hwid } = useDevice();
-  const { ip } = useIp();
-  const { status } = useDevicePowerStatus();
+    const { data: tempHum } = useSensor();
+    const { hwid } = useDevice();
+    const { ip } = useIp();
+    const { status } = useDevicePowerStatus();
 
-  const handleClickPower = async () => {
-    setDevicePower(!status);
-  };
+    const handleClickPower = async () => {
+        setDevicePower(!status);
+    };
 
-  return (
-    <>
-      <div className=" flex h-full flex-col justify-between">
-        <CardHeader>
-          <CardTitle>
-            <PowerSettingsNewIcon /> Device Power
-          </CardTitle>
-          <CardDescription>Controlling device power status</CardDescription>
-        </CardHeader>
-        <div className="grid grid-cols-3 gap-2">
-          <>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-x-2 space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Temperature
-                </CardTitle>
-                <Thermostat />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {tempHum?.temperature} °C
+    return (
+        <>
+            <div className=" flex h-full flex-col justify-between">
+                <CardHeader>
+                    <CardTitle>
+                        <PowerSettingsNewIcon /> Device Power
+                    </CardTitle>
+                    <CardDescription>
+                        Controlling device power status
+                    </CardDescription>
+                </CardHeader>
+                <div className="grid grid-cols-3 gap-2">
+                    <>
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-x-2 space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">
+                                    Temperature
+                                </CardTitle>
+                                <Thermostat />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">
+                                    {tempHum?.temperature} °C
+                                </div>
+                                {/* <p className="text-xs text-muted-foreground">
+                +20.1% from last month
+              </p> */}
+                            </CardContent>
+                        </Card>
+                    </>
+
+                    <Card onClick={handleClickPower} className="cursor-pointer">
+                        <CardHeader className="flex flex-row items-center justify-center space-x-2 space-y-0 pb-2">
+                            <CardTitle className="text-sm font-bold">
+                                {status ? 'On' : 'Off'}
+                            </CardTitle>
+                            {status ? (
+                                <PowerIcon size={12} />
+                            ) : (
+                                <PowerOffIcon size={12} />
+                            )}
+                        </CardHeader>
+                        <CardContent className="flex flex-col items-center justify-center gap-2">
+                            <Switch checked={status} />
+                            {/* {status ? <PowerIcon /> : <PowerOffIcon />} */}
+                        </CardContent>
+                    </Card>
+
+                    <>
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-x-2 space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">
+                                    Humidity
+                                </CardTitle>
+                                <AcUnit />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">
+                                    {tempHum?.humidity}%
+                                </div>
+                                {/* <p className="text-xs text-muted-foreground">
+                +20.1% from last month
+              </p> */}
+                            </CardContent>
+                        </Card>
+                    </>
                 </div>
-                {/* <p className="text-xs text-muted-foreground">
-                +20.1% from last month
-              </p> */}
-              </CardContent>
-            </Card>
-          </>
+                <div>
+                    <Separator className="my-2" />
+                    <div className="grid grid-cols-3 text-xs">
+                        {/* QR Button, Power button, Wifi Disconnected button */}
+                        <div className="flex items-center gap-2">
+                            <Cable fontSize="small" />
+                            {hwid || 'unknown'}
+                        </div>
 
-          <Card onClick={handleClickPower} className="cursor-pointer">
-            <CardHeader className="flex flex-row items-center justify-center space-x-2 space-y-0 pb-2">
-              <CardTitle className="text-sm font-bold">
-                {status ? 'On' : 'Off'}
-              </CardTitle>
-              {status ? <PowerIcon size={12} /> : <PowerOffIcon size={12} />}
-            </CardHeader>
-            <CardContent className="flex flex-col items-center justify-center gap-2">
-              <Switch checked={status} />
-              {/* {status ? <PowerIcon /> : <PowerOffIcon />} */}
-            </CardContent>
-          </Card>
-
-          <>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-x-2 space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Humidity</CardTitle>
-                <AcUnit />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{tempHum?.humidity}%</div>
-                {/* <p className="text-xs text-muted-foreground">
-                +20.1% from last month
-              </p> */}
-              </CardContent>
-            </Card>
-          </>
-        </div>
-        <div>
-          <Separator className="my-2" />
-          <div className="grid grid-cols-3 text-xs">
-            {/* QR Button, Power button, Wifi Disconnected button */}
-            <div className="flex items-center gap-2">
-              <Cable fontSize="small" />
-              {hwid || 'unknown'}
+                        <Link
+                            href="/settings/view-qr"
+                            className={cn(
+                                buttonVariants({ variant: 'ghost' }),
+                                'w-full flex justify-center',
+                            )}
+                        >
+                            <QrCode2 fontSize="large" />
+                        </Link>
+                        <Link
+                            href="/wifi"
+                            className={cn(
+                                buttonVariants({ variant: 'ghost' }),
+                                'flex gap-2 items-center justify-end text-xs',
+                            )}
+                        >
+                            {ip ? (
+                                <>
+                                    {ip}
+                                    <Wifi fontSize="small" />
+                                </>
+                            ) : (
+                                <>
+                                    Disconnected
+                                    <WifiOff fontSize="small" />
+                                </>
+                            )}
+                        </Link>
+                    </div>
+                </div>
             </div>
 
-            <Link
-              href="/settings/view-qr"
-              className={cn(
-                buttonVariants({ variant: 'ghost' }),
-                'w-full flex justify-center',
-              )}
-            >
-              <QrCode2 fontSize="large" />
-            </Link>
-            <Link
-              href="/wifi"
-              className={cn(
-                buttonVariants({ variant: 'ghost' }),
-                'flex gap-2 items-center justify-end text-xs',
-              )}
-            >
-              {ip ? (
-                <>
-                  {ip}
-                  <Wifi fontSize="small" />
-                </>
-              ) : (
-                <>
-                  Disconnected
-                  <WifiOff fontSize="small" />
-                </>
-              )}
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/*
+            {/*
 		Settings
 			- wifi
 			- device
@@ -144,8 +154,8 @@ const Dashboard = () => {
 		- Pairing
     - qr
     - schedule */}
-    </>
-  );
+        </>
+    );
 };
 
 export default Dashboard;
