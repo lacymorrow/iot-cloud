@@ -12,8 +12,8 @@ import { useRouter } from "next/router";
 
 import Qr from "../components/Qr";
 import useDevice from "../hooks/useDevice";
-import { NavigateNext, Refresh } from "@mui/icons-material";
-import { Loader2, Loader2Icon } from "lucide-react";
+import { NavigateNext } from "@mui/icons-material";
+import { Loader2Icon } from "lucide-react";
 
 const Index = () => {
   const [message, setMessage] = useState("Initializing...");

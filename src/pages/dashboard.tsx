@@ -2,8 +2,6 @@ import {
   AcUnit,
   Cable,
   QrCode2,
-  SignalWifi4Bar,
-  SignalWifiOff,
   Thermostat,
   Wifi,
   WifiOff,
@@ -33,7 +31,7 @@ const Dashboard = () => {
   const { data: tempHum } = useSensor();
   const { hwid } = useDevice();
   const { ip } = useIp();
-  const { status, isLoading, isError } = useDevicePowerStatus();
+  const { status } = useDevicePowerStatus();
 
   const handleClickPower = async () => {
     setDevicePower(!status);
