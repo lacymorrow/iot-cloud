@@ -23,8 +23,8 @@ const useDevicePowerStatus = (params?: any) => {
 
     return {
         mutate,
-        status: data && data !== 'off' && data !== '0',
-        isLoading: !error && !data,
+        status: data ? data === '1' : false,
+        isLoading: !error && typeof data === 'undefined',
         isError: error,
     };
 };

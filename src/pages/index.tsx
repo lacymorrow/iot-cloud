@@ -17,46 +17,46 @@ import Qr from '../components/Qr';
 import useDevice from '../hooks/useDevice';
 
 const Index = () => {
-  const [message, setMessage] = useState('Initializing...');
-  const { hwid } = useDevice();
-  const router = useRouter();
+    const [message, setMessage] = useState('Initializing...');
+    const { hwid } = useDevice();
+    const router = useRouter();
 
-  /* message countdown from 5 then redirect to /dashboard */
-  useEffect(() => {
-    if (hwid) {
-      let count = 5;
-      const interval = setInterval(() => {
-        setMessage(`Starting in ${count} seconds...`);
-        count -= 1;
-      }, 1000);
-      setTimeout(() => {
-        clearInterval(interval);
-        setMessage('starting...');
-        router.push('/dashboard');
-      }, 5000);
-    }
-  }, [hwid, router]);
+    /* message countdown from 5 then redirect to /dashboard */
+    useEffect(() => {
+        if (hwid) {
+            let count = 5;
+            const interval = setInterval(() => {
+                setMessage(`Starting in ${count} seconds...`);
+                count -= 1;
+            }, 1000);
+            setTimeout(() => {
+                clearInterval(interval);
+                setMessage('starting...');
+                router.push('/dashboard');
+            }, 5000);
+        }
+    }, [hwid, router]);
 
-  return (
-    <>
-      <div className="flex flex-col content-center justify-center text-center">
-        <h3>{message}</h3>
-        <div className="mx-auto flex content-center justify-center">
-          <Qr data={hwid} />
-        </div>
-        <Button asChild {...(hwid ? {} : { disabled: true })}>
-          <Link href="/dashboard">
-            Dashboard{' '}
-            {hwid ? (
-              <NavigateNext />
-            ) : (
-              <Loader2Icon className="ml-2 h-4 w-4 animate-spin" />
-            )}
-          </Link>
-        </Button>
-      </div>
-    </>
-  );
+    return (
+        <>
+            <div className="flex flex-col content-center justify-center text-center">
+                <h3>{message}</h3>
+                <div className="mx-auto flex content-center justify-center">
+                    <Qr data={hwid} />
+                </div>
+                <Button asChild {...(hwid ? {} : { disabled: true })}>
+                    <Link href="/dashboard">
+                        Dashboard{' '}
+                        {hwid ? (
+                            <NavigateNext />
+                        ) : (
+                            <Loader2Icon className="ml-2 h-4 w-4 animate-spin" />
+                        )}
+                    </Link>
+                </Button>
+            </div>
+        </>
+    );
 };
 
 export default Index;

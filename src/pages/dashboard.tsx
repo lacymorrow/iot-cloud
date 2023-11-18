@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import {
     AcUnit,
     Cable,
@@ -21,6 +23,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
+import { celciusToFahrenheit } from '@/utils/celciusToFahrenheit';
 
 import useDevice from '../hooks/useDevice';
 import useDevicePowerStatus from '../hooks/useDevicePowerStatus';
@@ -34,9 +37,16 @@ const Dashboard = () => {
     const { ip } = useIp();
     const { status } = useDevicePowerStatus();
 
+    console.log('status', typeof status);
+
     const handleClickPower = async () => {
         setDevicePower(!status);
     };
+
+    const fahrenheit = useMemo(() => {
+        if (!tempHum?.temperature) return '---';
+        return celciusToFahrenheit(tempHum.temperature);
+    }, [tempHum?.temperature]);
 
     return (
         <>
@@ -62,9 +72,9 @@ const Dashboard = () => {
                                 <div className="text-2xl font-bold">
                                     {tempHum?.temperature} °C
                                 </div>
-                                {/* <p className="text-xs text-muted-foreground">
-                +20.1% from last month
-              </p> */}
+                                <p className="text-muted-foreground">
+                                    {fahrenheit} °F
+                                </p>
                             </CardContent>
                         </Card>
                     </>
