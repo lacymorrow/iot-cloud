@@ -33,7 +33,13 @@
     "jsx": "preserve",
     "noEmit": true,
     "isolatedModules": true,
-    "incremental": true
+    "incremental": true,
+
+		/* ShadCN */
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"]
+		}
   },
   "exclude": ["./out/**/*", "./node_modules/**/*"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]

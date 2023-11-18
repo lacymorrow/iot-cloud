@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 import {
   NavigateNext,
@@ -6,25 +6,30 @@ import {
   SettingsInputAntenna,
   Visibility,
   VisibilityOff,
-} from '@mui/icons-material';
-import WifiIcon from '@mui/icons-material/Wifi';
-import { LoadingButton } from '@mui/lab';
-import { Autocomplete, Button, Grid, TextField } from '@mui/material';
-import Link from 'next/link';
-import useSWR from 'swr';
+  WifiTethering,
+} from "@mui/icons-material";
+import WifiIcon from "@mui/icons-material/Wifi";
+import { LoadingButton } from "@mui/lab";
+import { Autocomplete, Grid, TextField } from "@mui/material";
+import Link from "next/link";
+import useSWR from "swr";
 
-import Meta from '../components/Meta';
-import useWifiInfo from '../hooks/useWifiInfo';
-import Layout from '../layouts/MainLayout';
+import useWifiInfo from "../hooks/useWifiInfo";
+
 import {
   getIsNetworkConnected,
   getSavedNetworks,
   getWifiNetworks,
   setNewSavedNetwork,
   setWifiNetwork,
-} from '../lib/py/pyapi';
-import pylog from '../lib/py/pylog';
-import config from '../utils/config';
+} from "../lib/py/pyapi";
+import pylog from "../lib/py/pylog";
+import config from "../utils/config";
+import { Button } from "@/components/ui/button";
+import { EyeIcon, EyeOffIcon, Loader2Icon, RotateCwIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const buttonClasses = "w-full h-full flex gap-2";
 
 const Wifi = () => {
   // const [state, setState] = useReducer<Reducer<StateType, Partial<StateType>>>(
@@ -48,14 +53,14 @@ const Wifi = () => {
   // };
 
   const { data: info, mutate, isError } = useWifiInfo();
-  const { data: savedNetworks } = useSWR('/saved-networks', getSavedNetworks);
+  const { data: savedNetworks } = useSWR("/saved-networks", getSavedNetworks);
 
   const selectRef = useRef<HTMLSelectElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  const [network, setNetwork] = useState('');
+  const [network, setNetwork] = useState("");
   const [networks, setNetworks] = useState<string[]>([]);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
   const [isPasswordType, setIsPasswordType] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -70,7 +75,7 @@ const Wifi = () => {
   };
 
   const autofillPassword = () => {
-    if (!password && info?.ssid && savedNetworks[info.ssid]) {
+    if (!password && info?.ssid && savedNetworks?.[info.ssid]) {
       // Network was previously connected, save credentials
       setPassword(savedNetworks[info.ssid]);
     }
@@ -138,27 +143,8 @@ const Wifi = () => {
   }, [info, networks]);
 
   return (
-    <Layout
-      meta={
-        <Meta
-          title={`Wifi | ${config.title}: ${config.tagline}`}
-          description={config.description}
-        />
-      }
-    >
-      <div className="block text-center ">
-        <h4
-          className="my-0"
-          onClick={async () => setNewSavedNetwork(network, password)}
-        >
-          Wifi Setup
-        </h4>
-        <h4
-          className="my-0"
-          onClick={async () => console.log(await getSavedNetworks())}
-        >
-          Wifi Setup
-        </h4>
+    <>
+      <div className="block text-center">
         {(!info && !isError && <p>Getting WiFi information...</p>) ||
         isError ? (
           <p>Enter your WiFi name (SSID) and password to connect.</p>
@@ -187,7 +173,7 @@ const Wifi = () => {
                 ref={selectRef}
                 disabled={isLoading || isConnecting}
                 options={networks}
-                sx={{ width: '100%' }}
+                sx={{ width: "100%" }}
                 renderInput={(params) => (
                   <TextField {...params} label="Network" />
                 )}
@@ -199,16 +185,17 @@ const Wifi = () => {
             )}
           </Grid>
           <Grid item xs={3}>
-            <LoadingButton
-              loading={isLoading}
-              loadingPosition="start"
-              sx={{ width: '100%' }}
-              startIcon={<Refresh />}
+            <Button
               onClick={loadWifiNetworks}
-              variant="outlined"
+              className="w-full text-md h-full flex gap-2"
             >
+              {isLoading ? (
+                <Loader2Icon className="h-4 w-4 animate-spin" />
+              ) : (
+                <RotateCwIcon />
+              )}{" "}
               Refresh
-            </LoadingButton>
+            </Button>
           </Grid>
 
           <Grid item xs={9}>
@@ -217,49 +204,58 @@ const Wifi = () => {
               label="Password"
               variant="outlined"
               value={password}
-              sx={{ width: '100%' }}
-              type={isPasswordType ? 'password' : 'text'}
+              sx={{ width: "100%" }}
+              type={isPasswordType ? "password" : "text"}
               onChange={handleInput}
             />
           </Grid>
           <Grid item xs={3}>
             <Button
-              variant="outlined"
-              sx={{ width: '100%' }}
-              startIcon={isPasswordType ? <Visibility /> : <VisibilityOff />}
               onClick={toggleShowPassword}
+              className="w-full text-md h-full flex gap-2"
             >
-              {isPasswordType ? 'Show' : 'Hide'}
+              {isPasswordType ? (
+                <>
+                  <EyeIcon /> Show
+                </>
+              ) : (
+                <>
+                  <EyeOffIcon /> Hide
+                </>
+              )}
             </Button>
           </Grid>
 
-          <Grid item xs={6}>
-            <LoadingButton
-              loading={isLoading || isConnecting}
-              loadingPosition="end"
-              sx={{ width: '100%' }}
-              endIcon={<SettingsInputAntenna />}
-              variant="contained"
+          <div className="grid grid-cols-2">
+            <Button
               onClick={handleSubmit}
+              className={cn(buttonClasses, "text-xl")}
             >
+              {isLoading || isConnecting ? (
+                <Loader2Icon className="h-4 w-4 animate-spin" />
+              ) : (
+                <WifiTethering fontSize="inherit" />
+              )}
               Connect
-            </LoadingButton>
-          </Grid>
-          <Grid item xs={6}>
-            <Link href="/dashboard" passHref>
-              <Button
-                disabled={!info?.ssid}
-                sx={{ width: '100%' }}
-                endIcon={<NavigateNext />}
-                variant="contained"
-              >
-                Done
-              </Button>
-            </Link>
-          </Grid>
+            </Button>
+            <Button
+              disabled={!info?.ssid}
+              className={cn(buttonClasses, "text-xl")}
+            >
+              {info?.ssid ? (
+                <Link href="/dashboard">
+                  Dashboard <NavigateNext />
+                </Link>
+              ) : (
+                <>
+                  Dashboard <NavigateNext />
+                </>
+              )}
+            </Button>
+          </div>
         </Grid>
       </div>
-    </Layout>
+    </>
   );
 };
 export default Wifi;

@@ -4,21 +4,19 @@
 	type: any
 */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
-import { NavigateNext } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import Link from "next/link";
+import { useRouter } from "next/router";
 
-import Meta from '../components/Meta';
-import Qr from '../components/Qr';
-import useDevice from '../hooks/useDevice';
-import Layout from '../layouts/MainLayout';
-import config from '../utils/config';
+import Qr from "../components/Qr";
+import useDevice from "../hooks/useDevice";
+import { NavigateNext, Refresh } from "@mui/icons-material";
+import { Loader2, Loader2Icon } from "lucide-react";
 
 const Index = () => {
-  const [message, setMessage] = useState('initializing...');
+  const [message, setMessage] = useState("Initializing...");
   const { hwid } = useDevice();
   const router = useRouter();
 
@@ -27,48 +25,36 @@ const Index = () => {
     if (hwid) {
       let count = 5;
       const interval = setInterval(() => {
-        setMessage(`starting in ${count} seconds...`);
+        setMessage(`Starting in ${count} seconds...`);
         count -= 1;
       }, 1000);
       setTimeout(() => {
         clearInterval(interval);
-        setMessage('starting...');
-        router.push('/dashboard');
-      }, 50000);
+        setMessage("starting...");
+        router.push("/dashboard");
+      }, 5000);
     }
   }, [hwid]);
 
   return (
-    <Layout
-      meta={
-        <Meta
-          title={`Smartcloud | ${config.title}: ${config.tagline}`}
-          description={config.description}
-        />
-      }
-    >
-      <Meta
-        title={`${config.title}: ${config.tagline}`}
-        description={config.description}
-      />
-
+    <>
       <div className="flex flex-col content-center justify-center text-center">
         <h3>{message}</h3>
         <div className="max-w-72 mx-auto flex content-center justify-center">
           <Qr data={hwid} />
         </div>
-        <Link href="/dashboard" passHref>
-          <LoadingButton
-            endIcon={<NavigateNext />}
-            loading={!hwid}
-            loadingPosition="end"
-            variant="contained"
-          >
-            Dashboard
-          </LoadingButton>
-        </Link>
+        <Button asChild {...(hwid ? {} : { disabled: true })}>
+          <Link href="/dashboard">
+            Dashboard{" "}
+            {hwid ? (
+              <NavigateNext />
+            ) : (
+              <Loader2Icon className="ml-2 h-4 w-4 animate-spin" />
+            )}
+          </Link>
+        </Button>
       </div>
-    </Layout>
+    </>
   );
 };
 

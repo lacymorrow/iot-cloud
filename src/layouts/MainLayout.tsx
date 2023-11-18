@@ -1,18 +1,36 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
+import { Inter as FontSans } from "next/font/google";
 
-type MainProps = {
-  meta: ReactNode;
+import Meta from "@/components/Meta";
+import config from "@/utils/config";
+import { cn } from "@/lib/utils";
+
+export const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+type MainLayoutProps = {
   children: ReactNode;
 };
 
-const Main = (props: MainProps) => {
+const MainLayout = (props: MainLayoutProps) => {
   return (
-    <div className="h-[320px] w-[480px] border-solid border-2 border-black p-2">
-      {props.meta}
-
-      <div className="h-full w-full relative">{props.children}</div>
-    </div>
+    <>
+      <Meta
+        title={`${config.title}: ${config.tagline}`}
+        description={config.description}
+      />
+      <div
+        className={cn(
+          "bg-background font-sans antialiased",
+          "h-[320px] w-[480px] border-solid border-2 border-black p-2 relative",
+          fontSans.variable
+        )}
+      >
+        {props.children}
+      </div>
+    </>
   );
 };
 
-export default Main;
+export default MainLayout;
