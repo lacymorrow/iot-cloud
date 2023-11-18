@@ -9,7 +9,7 @@ const pylog = async (text: string, ...params: any) => {
         await window.pywebview.api.log(text);
         return true;
       })(),
-      config.TIMEOUT
+      config.TIMEOUT,
     ).catch((error) => console.log(`[Pylog] ${text} error: ${error}`));
   } else {
     console.log(`[Pylog Error] ${text}`, ...params);

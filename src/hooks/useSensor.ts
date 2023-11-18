@@ -15,7 +15,7 @@ const useSensor = (params?: any) => {
       revalidateOnFocus: true,
       revalidateOnReconnect: true,
       ...params,
-    }
+    },
   );
 
   return {

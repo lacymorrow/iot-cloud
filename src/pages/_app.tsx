@@ -1,8 +1,8 @@
-import { AppProps } from "next/app";
-import Head from "next/head";
+import { AppProps } from 'next/app';
+import Head from 'next/head';
 
-import "@/styles/global.scss";
-import MainLayout from "@/layouts/MainLayout";
+import '@/styles/global.scss';
+import MainLayout from '@/layouts/MainLayout';
 
 declare global {
   interface Window {

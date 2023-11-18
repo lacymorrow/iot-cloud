@@ -1,28 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import { NavigateNext, WifiTethering } from "@mui/icons-material";
-import WifiIcon from "@mui/icons-material/Wifi";
+import { NavigateNext, WifiTethering } from '@mui/icons-material';
+import WifiIcon from '@mui/icons-material/Wifi';
+import { Autocomplete, Grid, TextField } from '@mui/material';
+import { EyeIcon, EyeOffIcon, Loader2Icon, RotateCwIcon } from 'lucide-react';
+import Link from 'next/link';
+import useSWR from 'swr';
 
-import { Autocomplete, Grid, TextField } from "@mui/material";
-import Link from "next/link";
-import useSWR from "swr";
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
-import useWifiInfo from "../hooks/useWifiInfo";
-
+import useWifiInfo from '../hooks/useWifiInfo';
 import {
   getIsNetworkConnected,
   getSavedNetworks,
   getWifiNetworks,
   setNewSavedNetwork,
   setWifiNetwork,
-} from "../lib/py/pyapi";
-import pylog from "../lib/py/pylog";
-import config from "../utils/config";
-import { Button } from "@/components/ui/button";
-import { EyeIcon, EyeOffIcon, Loader2Icon, RotateCwIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+} from '../lib/py/pyapi';
+import pylog from '../lib/py/pylog';
+import config from '../utils/config';
 
-const buttonClasses = "w-full h-full flex gap-2";
+const buttonClasses = 'w-full h-full flex gap-2';
 
 const Wifi = () => {
   // const [state, setState] = useReducer<Reducer<StateType, Partial<StateType>>>(
@@ -46,14 +45,14 @@ const Wifi = () => {
   // };
 
   const { data: info, mutate, isError } = useWifiInfo();
-  const { data: savedNetworks } = useSWR("/saved-networks", getSavedNetworks);
+  const { data: savedNetworks } = useSWR('/saved-networks', getSavedNetworks);
 
   const selectRef = useRef<HTMLSelectElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  const [network, setNetwork] = useState("");
+  const [network, setNetwork] = useState('');
   const [networks, setNetworks] = useState<string[]>([]);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
   const [isPasswordType, setIsPasswordType] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -166,7 +165,7 @@ const Wifi = () => {
                 ref={selectRef}
                 disabled={isLoading || isConnecting}
                 options={networks}
-                sx={{ width: "100%" }}
+                sx={{ width: '100%' }}
                 renderInput={(params) => (
                   <TextField {...params} label="Network" />
                 )}
@@ -180,13 +179,13 @@ const Wifi = () => {
           <Grid item xs={3}>
             <Button
               onClick={loadWifiNetworks}
-              className="w-full text-md h-full flex gap-2"
+              className="text-md flex h-full w-full gap-2"
             >
               {isLoading ? (
                 <Loader2Icon className="h-4 w-4 animate-spin" />
               ) : (
                 <RotateCwIcon />
-              )}{" "}
+              )}{' '}
               Refresh
             </Button>
           </Grid>
@@ -197,15 +196,15 @@ const Wifi = () => {
               label="Password"
               variant="outlined"
               value={password}
-              sx={{ width: "100%" }}
-              type={isPasswordType ? "password" : "text"}
+              sx={{ width: '100%' }}
+              type={isPasswordType ? 'password' : 'text'}
               onChange={handleInput}
             />
           </Grid>
           <Grid item xs={3}>
             <Button
               onClick={toggleShowPassword}
-              className="w-full text-md h-full flex gap-2"
+              className="text-md flex h-full w-full gap-2"
             >
               {isPasswordType ? (
                 <>
@@ -222,7 +221,7 @@ const Wifi = () => {
           <div className="grid grid-cols-2">
             <Button
               onClick={handleSubmit}
-              className={cn(buttonClasses, "text-xl")}
+              className={cn(buttonClasses, 'text-xl')}
             >
               {isLoading || isConnecting ? (
                 <Loader2Icon className="h-4 w-4 animate-spin" />
@@ -233,7 +232,7 @@ const Wifi = () => {
             </Button>
             <Button
               disabled={!info?.ssid}
-              className={cn(buttonClasses, "text-xl")}
+              className={cn(buttonClasses, 'text-xl')}
             >
               {info?.ssid ? (
                 <Link href="/dashboard">

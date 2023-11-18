@@ -1,8 +1,8 @@
 import { mutate } from 'swr';
 
+import pycall from './pycall';
 import config from '../../utils/config';
 import { timeout } from '../../utils/utils';
-import pycall from './pycall';
 
 // log errors
 // ERROR HANDLING
@@ -73,6 +73,7 @@ export const getDeviceStatus = () => {
 };
 
 export const getHardwareId = () => {
+
 	return pycall('getHardwareId').catch(() => {
 		if (process.env.NODE_ENV === 'development') {
 			console.log('Dev getHardwareId> HWID set to 123456');
@@ -88,7 +89,7 @@ export const getIsNetworkConnected = async () => {
 			pycall('checkWifiConnection').catch(() => {
 				return false;
 			}))(),
-		config.NETWORK_TIMEOUT
+		config.NETWORK_TIMEOUT,
 	);
 
 	return data;
@@ -110,7 +111,7 @@ export const getSavedNetworks = () => {
 
 export const getTemperatureHumidity = async (): Promise<{
 	temperature: string;
-	humidity: String;
+	humidity: string;
 }> => {
 	const data = await pycall('getTemperatureHumidity').catch(() => {
 		if (process.env.NODE_ENV === 'development') {
@@ -162,7 +163,7 @@ export const getWifiNetworks = async () => {
 		// Filter only unique values
 		.filter(
 			(el: string, index: number, array: string[]) =>
-				array.indexOf(el) === index
+				array.indexOf(el) === index,
 		)
 		// Filter falsy values
 		.filter((el: string) => el);

@@ -5,27 +5,28 @@ import {
   Thermostat,
   Wifi,
   WifiOff,
-} from "@mui/icons-material";
-import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+} from '@mui/icons-material';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import { PowerIcon, PowerOffIcon } from 'lucide-react';
+import Link from 'next/link';
+
+import { buttonVariants } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import Link from "next/link";
+} from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { cn } from '@/lib/utils';
 
-import useDevice from "../hooks/useDevice";
-import useDevicePowerStatus from "../hooks/useDevicePowerStatus";
-import useIp from "../hooks/useIp";
-import useSensor from "../hooks/useSensor";
-import { setDevicePower } from "../lib/py/pyapi";
-import { Separator } from "@/components/ui/separator";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Switch } from "@/components/ui/switch";
-import { PowerIcon, PowerOffIcon } from "lucide-react";
+import useDevice from '../hooks/useDevice';
+import useDevicePowerStatus from '../hooks/useDevicePowerStatus';
+import useIp from '../hooks/useIp';
+import useSensor from '../hooks/useSensor';
+import { setDevicePower } from '../lib/py/pyapi';
 
 const Dashboard = () => {
   const { data: tempHum } = useSensor();
@@ -39,7 +40,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className=" h-full flex flex-col justify-between">
+      <div className=" flex h-full flex-col justify-between">
         <CardHeader>
           <CardTitle>
             <PowerSettingsNewIcon /> Device Power
@@ -49,7 +50,7 @@ const Dashboard = () => {
         <div className="grid grid-cols-3 gap-2">
           <>
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 space-x-2 pb-2">
+              <CardHeader className="flex flex-row items-center justify-between space-x-2 space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Temperature
                 </CardTitle>
@@ -67,13 +68,13 @@ const Dashboard = () => {
           </>
 
           <Card onClick={handleClickPower} className="cursor-pointer">
-            <CardHeader className="flex flex-row items-center justify-center space-y-0 space-x-2 pb-2">
+            <CardHeader className="flex flex-row items-center justify-center space-x-2 space-y-0 pb-2">
               <CardTitle className="text-sm font-bold">
-                {status ? "On" : "Off"}
+                {status ? 'On' : 'Off'}
               </CardTitle>
               {status ? <PowerIcon size={12} /> : <PowerOffIcon size={12} />}
             </CardHeader>
-            <CardContent className="flex flex-col items-center gap-2 justify-center">
+            <CardContent className="flex flex-col items-center justify-center gap-2">
               <Switch checked={status} />
               {/* {status ? <PowerIcon /> : <PowerOffIcon />} */}
             </CardContent>
@@ -81,7 +82,7 @@ const Dashboard = () => {
 
           <>
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 space-x-2 pb-2">
+              <CardHeader className="flex flex-row items-center justify-between space-x-2 space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Humidity</CardTitle>
                 <AcUnit />
               </CardHeader>
@@ -98,16 +99,16 @@ const Dashboard = () => {
           <Separator className="my-2" />
           <div className="grid grid-cols-3 text-xs">
             {/* QR Button, Power button, Wifi Disconnected button */}
-            <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-2">
               <Cable fontSize="small" />
-              {hwid || "unknown"}
+              {hwid || 'unknown'}
             </div>
 
             <Link
               href="/settings/view-qr"
               className={cn(
-                buttonVariants({ variant: "ghost" }),
-                "w-full flex justify-center"
+                buttonVariants({ variant: 'ghost' }),
+                'w-full flex justify-center',
               )}
             >
               <QrCode2 fontSize="large" />
@@ -115,8 +116,8 @@ const Dashboard = () => {
             <Link
               href="/wifi"
               className={cn(
-                buttonVariants({ variant: "ghost" }),
-                "flex gap-2 items-center justify-end text-xs"
+                buttonVariants({ variant: 'ghost' }),
+                'flex gap-2 items-center justify-end text-xs',
               )}
             >
               {ip ? (

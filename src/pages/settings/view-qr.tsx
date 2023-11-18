@@ -1,7 +1,7 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-import Qr from "../../components/Qr";
-import useDevice from "../../hooks/useDevice";
+import Qr from '../../components/Qr';
+import useDevice from '../../hooks/useDevice';
 
 const ViewQr = () => {
   const { hwid } = useDevice();

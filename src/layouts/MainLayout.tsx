@@ -1,13 +1,14 @@
-import { ReactNode } from "react";
-import { Inter as FontSans } from "next/font/google";
+import { ReactNode } from 'react';
 
-import Meta from "@/components/Meta";
-import config from "@/utils/config";
-import { cn } from "@/lib/utils";
+import { Inter as FontSans } from 'next/font/google';
+
+import Meta from '@/components/Meta';
+import { cn } from '@/lib/utils';
+import config from '@/utils/config';
 
 export const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
+  subsets: ['latin'],
+  variable: '--font-sans',
 });
 type MainLayoutProps = {
   children: ReactNode;
@@ -22,9 +23,9 @@ const MainLayout = (props: MainLayoutProps) => {
       />
       <div
         className={cn(
-          "bg-background font-sans antialiased",
-          "h-[320px] w-[480px] border-solid border-2 border-black p-2 relative",
-          fontSans.variable
+          'bg-background font-sans antialiased',
+          'h-[320px] w-[480px] border-solid border-2 border-black p-2 relative',
+          fontSans.variable,
         )}
       >
         {props.children}

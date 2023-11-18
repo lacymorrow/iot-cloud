@@ -4,19 +4,20 @@
 	type: any
 */
 
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from 'react';
 
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { NavigateNext } from '@mui/icons-material';
+import { Loader2Icon } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-import Qr from "../components/Qr";
-import useDevice from "../hooks/useDevice";
-import { NavigateNext } from "@mui/icons-material";
-import { Loader2Icon } from "lucide-react";
+import { Button } from '@/components/ui/button';
+
+import Qr from '../components/Qr';
+import useDevice from '../hooks/useDevice';
 
 const Index = () => {
-  const [message, setMessage] = useState("Initializing...");
+  const [message, setMessage] = useState('Initializing...');
   const { hwid } = useDevice();
   const router = useRouter();
 
@@ -30,22 +31,22 @@ const Index = () => {
       }, 1000);
       setTimeout(() => {
         clearInterval(interval);
-        setMessage("starting...");
-        router.push("/dashboard");
+        setMessage('starting...');
+        router.push('/dashboard');
       }, 5000);
     }
-  }, [hwid]);
+  }, [hwid, router]);
 
   return (
     <>
       <div className="flex flex-col content-center justify-center text-center">
         <h3>{message}</h3>
-        <div className="max-w-72 mx-auto flex content-center justify-center">
+        <div className="mx-auto flex content-center justify-center">
           <Qr data={hwid} />
         </div>
         <Button asChild {...(hwid ? {} : { disabled: true })}>
           <Link href="/dashboard">
-            Dashboard{" "}
+            Dashboard{' '}
             {hwid ? (
               <NavigateNext />
             ) : (
