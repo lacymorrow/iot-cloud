@@ -8,23 +8,23 @@
  */
 
 /*
-		Available API - defined in /pybin/api - not up to date
-		-------------------------------------
+        Available API - defined in /pybin/api - not up to date
+        -------------------------------------
 
-		init // Hello from Python {0}'.format(sys.version)
-		getIpAddress (gets wlan0 IP)
-		checkWifiConnection (intemittent internet connection)
-		getHardwareId (unique device id)
-		showLights (runs rainbow_lights.sh)
-		getRandomNumber
+        init // Hello from Python {0}'.format(sys.version)
+        getIpAddress (gets wlan0 IP)
+        checkWifiConnection (intemittent internet connection)
+        getHardwareId (unique device id)
+        showLights (runs rainbow_lights.sh)
+        getRandomNumber
 
-		Exposed at window.pywebview.api[endpoint]
+        Exposed at window.pywebview.api[endpoint]
 
 */
 
-import pylog from './pylog';
 import config from '../../utils/config';
 import { retryOperation } from '../../utils/utils';
+import pylog from './pylog';
 
 declare global {
     interface Window {
@@ -33,7 +33,7 @@ declare global {
 }
 
 /* Python API -> Shell Connection */
-const pycall = (endpoint: string, params: any = null) => {
+const pycall = (endpoint: string, params: any = undefined) => {
     return retryOperation(
         async () => {
             try {
