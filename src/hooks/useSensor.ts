@@ -9,7 +9,7 @@ const useSensor = (params?: any) => {
         getTemperatureHumidity,
         {
             refreshInterval: config.RETRY_DELAY,
-            refreshWhenHidden: false,
+            refreshWhenHidden: true,
             refreshWhenOffline: true,
             revalidateIfStale: true,
             revalidateOnFocus: true,

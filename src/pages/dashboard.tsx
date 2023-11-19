@@ -25,6 +25,7 @@ import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { celciusToFahrenheit } from '@/utils/celciusToFahrenheit';
 
+import mathRoundTruncate from '@/utils/mathRoundTruncate';
 import useDevice from '../hooks/useDevice';
 import useDevicePowerStatus from '../hooks/useDevicePowerStatus';
 import useIp from '../hooks/useIp';
@@ -45,7 +46,7 @@ const Dashboard = () => {
 
     const fahrenheit = useMemo(() => {
         if (!tempHum?.temperature) return '---';
-        return celciusToFahrenheit(tempHum.temperature);
+        return mathRoundTruncate(celciusToFahrenheit(tempHum.temperature), 2);
     }, [tempHum?.temperature]);
 
     return (
