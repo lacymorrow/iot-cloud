@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import QRCode from 'qrcode';
 
-import pylog from '../lib/py/pylog';
+import pylog from '@/lib/py/pylog';
 
 const QrCode = ({ data }: { data: string }) => {
     const qrEl = useRef(null);

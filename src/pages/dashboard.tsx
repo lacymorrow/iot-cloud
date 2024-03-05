@@ -26,11 +26,11 @@ import { cn } from '@/lib/utils';
 import { celciusToFahrenheit } from '@/utils/celciusToFahrenheit';
 
 import mathRoundTruncate from '@/utils/mathRoundTruncate';
-import useDevice from '../hooks/useDevice';
-import useDevicePowerStatus from '../hooks/useDevicePowerStatus';
-import useIp from '../hooks/useIp';
-import useSensor from '../hooks/useSensor';
-import { setDevicePower } from '../lib/py/pyapi';
+import useDevice from '@/hooks/useDevice';
+import useDevicePowerStatus from '@/hooks/useDevicePowerStatus';
+import useIp from '@/hooks/useIp';
+import useSensor from '@/hooks/useSensor';
+import { setDevicePower } from '@/lib/py/pyapi';
 
 const Dashboard = () => {
     const { data: tempHum } = useSensor();
@@ -52,14 +52,19 @@ const Dashboard = () => {
     return (
         <>
             <div className=" flex h-full flex-col justify-between">
-                <CardHeader>
-                    <CardTitle>
-                        <PowerSettingsNewIcon /> Device Power
-                    </CardTitle>
-                    <CardDescription>
-                        Controlling device power status
-                    </CardDescription>
-                </CardHeader>
+                <div className="flex justify-between">
+                    <CardHeader>
+                        <CardTitle>
+                            <PowerSettingsNewIcon /> Device Power
+                        </CardTitle>
+                        <CardDescription>
+                            Controlling device power status
+                        </CardDescription>
+                    </CardHeader>
+                    <Card>
+                        <CardContent>Hey</CardContent>
+                    </Card>
+                </div>
                 <div className="grid grid-cols-3 gap-2">
                     <>
                         <Card>

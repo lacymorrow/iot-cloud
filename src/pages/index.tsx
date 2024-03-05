@@ -5,19 +5,20 @@
 */
 
 import { useEffect, useState } from 'react';
+import { CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { NavigateNext } from '@mui/icons-material';
 import { Loader2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 
-import Qr from '../components/Qr';
-import useDevice from '../hooks/useDevice';
+import Qr from '@/components/Qr';
+import useDevice from '@/hooks/useDevice';
 
 const Index = () => {
-    const [message, setMessage] = useState('Initializing...');
+    const [message, setMessage] = useState('Initial-Lizz-ing...');
     const { hwid } = useDevice();
     const router = useRouter();
 
@@ -39,21 +40,29 @@ const Index = () => {
 
     return (
         <>
-            <div className="flex flex-col content-center justify-center text-center">
-                <h3>{message}</h3>
-                <div className="mx-auto flex content-center justify-center">
+            <div className="flex h-full flex-col justify-between">
+                <CardHeader>
+                    <CardTitle>LizzControl</CardTitle>
+                    <CardDescription>{message}</CardDescription>
+                </CardHeader>
+
+                <div className="flex flex-col items-center justify-center">
                     <Qr data={hwid} />
                 </div>
-                <Button asChild {...(hwid ? {} : { disabled: true })}>
-                    <Link href="/dashboard">
-                        Dashboard{' '}
-                        {hwid ? (
-                            <NavigateNext />
-                        ) : (
-                            <Loader2Icon className="ml-2 h-4 w-4 animate-spin" />
-                        )}
-                    </Link>
-                </Button>
+
+                <Link
+                    className={buttonVariants()}
+                    href="/dashboard"
+                    passHref
+                    {...(hwid ? {} : { disabled: true })}
+                >
+                    Dashboard{' '}
+                    {hwid ? (
+                        <NavigateNext />
+                    ) : (
+                        <Loader2Icon className="ml-2 h-4 w-4 animate-spin" />
+                    )}
+                </Link>
             </div>
         </>
     );
