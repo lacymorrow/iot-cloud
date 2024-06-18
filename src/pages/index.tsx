@@ -4,8 +4,8 @@
 	type: any
 */
 
-import { useEffect, useState } from 'react';
 import { CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useEffect, useState } from 'react';
 
 import { NavigateNext } from '@mui/icons-material';
 import { Loader2Icon } from 'lucide-react';
@@ -33,7 +33,7 @@ const Index = () => {
             setTimeout(() => {
                 clearInterval(interval);
                 setMessage('starting...');
-                router.push('/dashboard');
+                router.push('/events');
             }, count * 1000);
         }
     }, [hwid, router]);

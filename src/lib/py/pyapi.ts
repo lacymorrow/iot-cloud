@@ -224,13 +224,29 @@ export const removeAllStorage = () => {
 };
 
 export const createCron = (cron: string) => {
-    return pycall('add_cron_job', { cron });
+    return pycall('add_cron_job', { cron }).catch((error) => {
+        if (process.env.NODE_ENV === 'development') {
+            return '';
+        }
+        return `createCron error: ${error}`;
+    });
 };
 
-export const getCrons = () => {
-    return pycall('get_cron_jobs');
+export const getCrons = async () => {
+    const data = await pycall('list_cron_jobs').catch((error) => {
+        if (process.env.NODE_ENV === 'development') {
+            return '';
+        }
+        return `getCrons error: ${error}`;
+    });
+    return data;
 };
 
 export const deleteCron = (cron: string) => {
-    return pycall('delete_cron_job', { cron });
+    return pycall('delete_cron_job', { cron }).catch((error) => {
+        if (process.env.NODE_ENV === 'development') {
+            return '';
+        }
+        return `deleteCron error: ${error}`;
+    });
 };

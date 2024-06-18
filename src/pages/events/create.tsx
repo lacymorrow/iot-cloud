@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
+import { createCron } from '@/lib/py/pyapi';
+import pylog from '@/lib/py/pylog';
 import {
-    Checkbox,
     FormControl,
-    FormControlLabel,
     FormGroup,
     GlobalStyles,
     Grid,
@@ -20,7 +20,6 @@ export default function Create() {
     const router = useRouter();
     const [value, setValue] = useState<any | null>(dayjs(Date.now()));
     const [task, setTask] = useState<string>('on');
-    const [repeat, setRepeat] = useState<boolean>(true);
 
     const handleTaskChange = (event: SelectChangeEvent) => {
         setTask(event.target.value);
@@ -31,12 +30,17 @@ export default function Create() {
         setValue(newValue);
     };
 
-    const handleCreate = () => {
-        console.log(value, task, repeat);
+    const handleCreate = async () => {
+        console.log(value, task);
         const date = dayjs(value);
         // Generate a cron expression for daily repetition at the specified time
         const cronExpression = `${date.minute()} ${date.hour()} * * *`;
-        console.log(`Cron Expression: ${cronExpression}`);
+
+        const result = await createCron(
+            `${cronExpression} bash /home/pi/firmware/bin/util/gpio-${task}.sh`,
+        );
+        await pylog(result);
+        router.push('/events');
     };
 
     return (
@@ -66,10 +70,10 @@ export default function Create() {
                     </Select>
                 </FormControl>
                 <MobileTimePicker value={value} onChange={handleTimeChange} />
-                <FormControlLabel
+                {/* <FormControlLabel
                     control={<Checkbox disabled checked={repeat} />}
                     label="Repeat every day"
-                />
+                /> */}
 
                 <Grid container spacing={2} justifyContent="flex-end">
                     <Grid item>
