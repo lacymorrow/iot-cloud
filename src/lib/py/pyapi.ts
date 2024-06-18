@@ -1,8 +1,8 @@
 import { mutate } from 'swr';
 
-import pycall from './pycall';
 import config from '../../utils/config';
 import { timeout } from '../../utils/utils';
+import pycall from './pycall';
 
 // log errors
 // ERROR HANDLING
@@ -221,4 +221,16 @@ export const removeAllStorage = () => {
 
         return 'Error removing storage'; // todo
     });
+};
+
+export const createCron = (cron: string) => {
+    return pycall('add_cron_job', { cron });
+};
+
+export const getCrons = () => {
+    return pycall('get_cron_jobs');
+};
+
+export const deleteCron = (cron: string) => {
+    return pycall('delete_cron_job', { cron });
 };

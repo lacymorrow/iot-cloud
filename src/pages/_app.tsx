@@ -1,8 +1,10 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 
-import '@/styles/global.scss';
 import MainLayout from '@/layouts/MainLayout';
+import '@/styles/global.scss';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 declare global {
     interface Window {
@@ -19,9 +21,11 @@ const App = ({ Component, pageProps }: AppProps) => {
                     content="initial-scale=1, width=device-width"
                 />
             </Head>
-            <MainLayout>
-                <Component {...pageProps} />
-            </MainLayout>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <MainLayout>
+                    <Component {...pageProps} />
+                </MainLayout>
+            </LocalizationProvider>
         </>
     );
 };

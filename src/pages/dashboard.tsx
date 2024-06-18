@@ -25,12 +25,12 @@ import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { celciusToFahrenheit } from '@/utils/celciusToFahrenheit';
 
-import mathRoundTruncate from '@/utils/mathRoundTruncate';
 import useDevice from '@/hooks/useDevice';
 import useDevicePowerStatus from '@/hooks/useDevicePowerStatus';
 import useIp from '@/hooks/useIp';
 import useSensor from '@/hooks/useSensor';
 import { setDevicePower } from '@/lib/py/pyapi';
+import mathRoundTruncate from '@/utils/mathRoundTruncate';
 
 const Dashboard = () => {
     const { data: tempHum } = useSensor();
@@ -62,7 +62,9 @@ const Dashboard = () => {
                         </CardDescription>
                     </CardHeader>
                     <Card>
-                        <CardContent>Hey</CardContent>
+                        <CardContent>
+                            <Link href="/events">Schedule</Link>
+                        </CardContent>
                     </Card>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
