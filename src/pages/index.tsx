@@ -33,7 +33,7 @@ const Index = () => {
             setTimeout(() => {
                 clearInterval(interval);
                 setMessage('starting...');
-                router.push('/events');
+                router.push('/dashboard');
             }, count * 1000);
         }
     }, [hwid, router]);

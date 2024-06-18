@@ -224,7 +224,7 @@ export const removeAllStorage = () => {
 };
 
 export const createCron = (cron: string) => {
-    return pycall('add_cron_job', { cron }).catch((error) => {
+    return pycall('add_cron_job', cron).catch((error) => {
         if (process.env.NODE_ENV === 'development') {
             return '';
         }
@@ -243,7 +243,7 @@ export const getCrons = async () => {
 };
 
 export const deleteCron = (cron: string) => {
-    return pycall('delete_cron_job', { cron }).catch((error) => {
+    return pycall('delete_cron_job', cron).catch((error) => {
         if (process.env.NODE_ENV === 'development') {
             return '';
         }

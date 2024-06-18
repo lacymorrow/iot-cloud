@@ -6,7 +6,7 @@
         "build": "next build",
         "start": "next start",
         "build-stats": "cross-env ANALYZE=true npm run build",
-        "export": "next export -o app",
+        "export": "next export",
         "build-prod": "run-s clean build export && cp -R ./out/* ../iot-firmware/static && echo 'Copied to iot-firmware, build complete!'",
         "clean": "rimraf .next out",
         "lint": "next lint --fix",

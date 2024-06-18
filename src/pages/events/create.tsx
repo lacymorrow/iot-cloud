@@ -35,12 +35,18 @@ export default function Create() {
         const date = dayjs(value);
         // Generate a cron expression for daily repetition at the specified time
         const cronExpression = `${date.minute()} ${date.hour()} * * *`;
+        const command = `bash /home/pi/firmware/bin/util/gpio-${task}.sh`;
+        const cron = `${cronExpression} ${command}`;
+        await pylog(cron);
 
-        const result = await createCron(
-            `${cronExpression} bash /home/pi/firmware/bin/util/gpio-${task}.sh`,
-        );
-        await pylog(result);
-        router.push('/events');
+        await createCron(cron)
+            .then((result) => {
+                pylog(result);
+                router.push('/events');
+            })
+            .catch((error) => {
+                pylog(error);
+            });
     };
 
     return (
