@@ -6,7 +6,7 @@ import {
     QrCode2,
     Thermostat,
     Wifi,
-    WifiOff
+    WifiOff,
 } from '@mui/icons-material';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { PowerIcon, PowerOffIcon, Waves } from 'lucide-react';
@@ -68,17 +68,17 @@ const Dashboard = () => {
                                 <CardTitle>Heating</CardTitle>
                             </CardHeader>
                             <CardContent className="flex items-center justify-center">
-                                <Waves className="w-6 h-6" />
+                                <Waves className="h-6 w-6" />
                             </CardContent>
                         </Card>
                     </Link>
-                    <Link href="/events">
+                    <Link href="/schedule">
                         <Card>
                             <CardHeader>
                                 <CardTitle>Schedule</CardTitle>
                             </CardHeader>
                             <CardContent className="flex items-center justify-center">
-                                <CalendarIcon className="w-6 h-6" />
+                                <CalendarIcon className="h-6 w-6" />
                             </CardContent>
                         </Card>
                     </Link>
@@ -86,9 +86,7 @@ const Dashboard = () => {
                 <div className="grid grid-cols-3 gap-2">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-x-2 space-y-0 pb-2">
-                            <CardTitle className="">
-                                Temperature
-                            </CardTitle>
+                            <CardTitle className="">Temperature</CardTitle>
                             <Thermostat />
                         </CardHeader>
                         <CardContent>
@@ -121,9 +119,7 @@ const Dashboard = () => {
                     <>
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-x-2 space-y-0 pb-2">
-                                <CardTitle className="">
-                                    Humidity
-                                </CardTitle>
+                                <CardTitle className="">Humidity</CardTitle>
                                 <AcUnit />
                             </CardHeader>
                             <CardContent>

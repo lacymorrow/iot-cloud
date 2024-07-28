@@ -15,6 +15,7 @@
             }
         ]
     },
+    "ignorePatterns": ["**/node_modules", "**/dist", "**/components/ui"],
     "overrides": [
         // Configuration for TypeScript files
         {

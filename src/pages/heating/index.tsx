@@ -20,7 +20,6 @@ export default function Heating() {
                     <CardTitle>Heating</CardTitle>
                     <CardDescription className="flex justify-between gap-2">
                         Keep above this temperature
-
                         <span className="text-4xl font-bold">
                             {temperature}°F
                         </span>
@@ -29,26 +28,39 @@ export default function Heating() {
                 <CardContent>
                     <Slider
                         value={[temperature]}
-                        onValueChange={(value) => value[0] && setTemperature(value[0])}
+                        onValueChange={(value) =>
+                            value[0] && setTemperature(value[0])
+                        }
                         min={50}
                         max={100}
                         step={1}
                     />
                 </CardContent>
                 <CardFooter className="flex justify-between gap-2">
-                    <Link href="/dashboard" className={buttonVariants({ variant: 'secondary' })}>
+                    <Link
+                        href="/dashboard"
+                        className={buttonVariants({ variant: 'secondary' })}
+                    >
                         Back
                     </Link>
                     <div className="flex gap-2">
-                        <Link href="/dashboard" className={buttonVariants({ variant: 'destructive' })}>
+                        <Link
+                            href="/dashboard"
+                            className={buttonVariants({
+                                variant: 'destructive',
+                            })}
+                        >
                             Turn off
                         </Link>
-                        <Link href="/dashboard" className={buttonVariants({ variant: 'default' })}>
+                        <Link
+                            href="/dashboard"
+                            className={buttonVariants({ variant: 'default' })}
+                        >
                             Turn on
                         </Link>
                     </div>
                 </CardFooter>
             </Card>
         </div>
-    )
+    );
 }

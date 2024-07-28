@@ -42,7 +42,7 @@ export default function Create() {
         await createCron(cron)
             .then((result) => {
                 pylog(result);
-                router.push('/events');
+                router.push('/schedule');
             })
             .catch((error) => {
                 pylog(error);
