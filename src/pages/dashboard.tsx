@@ -6,10 +6,10 @@ import {
     QrCode2,
     Thermostat,
     Wifi,
-    WifiOff,
+    WifiOff
 } from '@mui/icons-material';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
-import { PowerIcon, PowerOffIcon } from 'lucide-react';
+import { PowerIcon, PowerOffIcon, Waves } from 'lucide-react';
 import Link from 'next/link';
 
 import { buttonVariants } from '@/components/ui/button';
@@ -31,6 +31,7 @@ import useIp from '@/hooks/useIp';
 import useSensor from '@/hooks/useSensor';
 import { setDevicePower } from '@/lib/py/pyapi';
 import mathRoundTruncate from '@/utils/mathRoundTruncate';
+import { CalendarIcon } from '@radix-ui/react-icons';
 
 const Dashboard = () => {
     const { data: tempHum } = useSensor();
@@ -52,7 +53,7 @@ const Dashboard = () => {
     return (
         <>
             <div className=" flex h-full flex-col justify-between">
-                <div className="flex justify-between">
+                <div className="flex justify-between gap-2">
                     <CardHeader>
                         <CardTitle>
                             <PowerSettingsNewIcon /> Device Power
@@ -61,31 +62,44 @@ const Dashboard = () => {
                             Controlling device power status
                         </CardDescription>
                     </CardHeader>
-                    <Card>
-                        <CardContent>
-                            <Link href="/events">Schedule</Link>
-                        </CardContent>
-                    </Card>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                    <>
+                    <Link href="/heating">
                         <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-x-2 space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">
-                                    Temperature
-                                </CardTitle>
-                                <Thermostat />
+                            <CardHeader>
+                                <CardTitle>Heating</CardTitle>
                             </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">
-                                    {tempHum?.temperature} °C
-                                </div>
-                                <p className="text-muted-foreground">
-                                    {fahrenheit} °F
-                                </p>
+                            <CardContent className="flex items-center justify-center">
+                                <Waves className="w-6 h-6" />
                             </CardContent>
                         </Card>
-                    </>
+                    </Link>
+                    <Link href="/events">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Schedule</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex items-center justify-center">
+                                <CalendarIcon className="w-6 h-6" />
+                            </CardContent>
+                        </Card>
+                    </Link>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-x-2 space-y-0 pb-2">
+                            <CardTitle className="">
+                                Temperature
+                            </CardTitle>
+                            <Thermostat />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">
+                                {tempHum?.temperature} °C
+                            </div>
+                            <p className="text-muted-foreground">
+                                {fahrenheit} °F
+                            </p>
+                        </CardContent>
+                    </Card>
 
                     <Card onClick={handleClickPower} className="cursor-pointer">
                         <CardHeader className="flex flex-row items-center justify-center space-x-2 space-y-0 pb-2">
@@ -107,7 +121,7 @@ const Dashboard = () => {
                     <>
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-x-2 space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">
+                                <CardTitle className="">
                                     Humidity
                                 </CardTitle>
                                 <AcUnit />

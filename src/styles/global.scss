@@ -71,10 +71,13 @@
         @apply border-border;
     }
 
+    html {
+        // font-size: 14px;
+    }
+
     body {
         @apply bg-background text-foreground text-sm;
         max-width: 480px;
         max-height: 320px;
-        font-size: 12px;
     }
 }

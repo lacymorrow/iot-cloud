@@ -24,7 +24,8 @@ const MainLayout = (props: MainLayoutProps) => {
             <div
                 className={cn(
                     'bg-background font-sans antialiased',
-                    'h-[320px] w-[480px] border-solid border-2 border-black p-2 relative',
+                    'h-[320px] w-[480px] border-solid border-2 border-black p-2 relative', // bounds
+                    'grid grid-cols-1 grid-rows-1 items-center', // grid
                     fontSans.variable,
                 )}
             >

@@ -1,7 +1,7 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 
-import MainLayout from '@/layouts/MainLayout';
+import MainLayout from '@/components/layouts/MainLayout';
 import '@/styles/global.scss';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
