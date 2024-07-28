@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import {
     AcUnit,
@@ -9,7 +9,7 @@ import {
     WifiOff,
 } from '@mui/icons-material';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
-import { PowerIcon, PowerOffIcon, Waves } from 'lucide-react';
+import { Loader2Icon, PowerIcon, PowerOffIcon, Waves } from 'lucide-react';
 import Link from 'next/link';
 
 import { buttonVariants } from '@/components/ui/button';
@@ -32,14 +32,20 @@ import useSensor from '@/hooks/useSensor';
 import { setDevicePower } from '@/lib/py/pyapi';
 import mathRoundTruncate from '@/utils/mathRoundTruncate';
 import { CalendarIcon } from '@radix-ui/react-icons';
+import { useSWRConfig } from 'swr';
 
 const Dashboard = () => {
-    const { data: tempHum } = useSensor();
+    const { mutate } = useSWRConfig();
+
     const { hwid } = useDevice();
     const { ip } = useIp();
-    const { status } = useDevicePowerStatus();
+    const { status, isLoading } = useDevicePowerStatus();
+    const { data: tempHum } = useSensor();
 
-    console.log('status', typeof status);
+    // Trigger revalidation for all hooks
+    useEffect(() => {
+        mutate(() => true);
+    }, [mutate]);
 
     const handleClickPower = async () => {
         setDevicePower(!status);
@@ -111,7 +117,11 @@ const Dashboard = () => {
                             )}
                         </CardHeader>
                         <CardContent className="flex flex-col items-center justify-center gap-2">
-                            <Switch checked={status} />
+                            {isLoading ? (
+                                <Loader2Icon className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <Switch checked={status} />
+                            )}
                             {/* {status ? <PowerIcon /> : <PowerOffIcon />} */}
                         </CardContent>
                     </Card>

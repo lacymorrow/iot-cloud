@@ -10,7 +10,7 @@ const useDevicePowerStatus = (params?: any) => {
         getDeviceStatus,
         {
             refreshInterval: config.RETRY_DELAY,
-            refreshWhenHidden: false,
+            refreshWhenHidden: true,
             refreshWhenOffline: true,
             revalidateIfStale: true,
             revalidateOnFocus: true,

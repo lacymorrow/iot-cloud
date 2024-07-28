@@ -39,7 +39,7 @@ export default function Create() {
         const cron = `${cronExpression} ${command}`;
         await pylog(cron);
 
-        await createCron(cron)
+        await createCron({ name: `cron-${task}`, cron })
             .then((result) => {
                 pylog(result);
                 router.push('/schedule');

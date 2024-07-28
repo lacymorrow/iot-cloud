@@ -3,7 +3,13 @@ import { useEffect, useRef, useState } from 'react';
 import { NavigateNext, WifiTethering } from '@mui/icons-material';
 import WifiIcon from '@mui/icons-material/Wifi';
 import { Autocomplete, Grid, TextField } from '@mui/material';
-import { EyeIcon, EyeOffIcon, Loader2Icon, RotateCwIcon } from 'lucide-react';
+import {
+    ArrowLeftIcon,
+    EyeIcon,
+    EyeOffIcon,
+    Loader2Icon,
+    RotateCwIcon,
+} from 'lucide-react';
 import Link from 'next/link';
 import useSWR from 'swr';
 
@@ -220,7 +226,12 @@ const Wifi = () => {
                         </Button>
                     </Grid>
 
-                    <div className="grid grid-cols-2">
+                    <div className="grid grid-cols-3">
+                        <Button>
+                            <Link href="/dashboard">
+                                <ArrowLeftIcon /> Back
+                            </Link>
+                        </Button>
                         <Button
                             onClick={handleSubmit}
                             className={cn(buttonClasses, 'text-xl')}

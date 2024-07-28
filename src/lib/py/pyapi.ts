@@ -82,8 +82,8 @@ export const getHardwareId = () => {
     });
 };
 
-export const getIsNetworkConnected = async () => {
-    const data = await timeout(
+export const getIsNetworkConnected = () => {
+    const data = timeout(
         (() =>
             pycall('checkWifiConnection').catch(() => {
                 return false;
@@ -108,11 +108,8 @@ export const getSavedNetworks = () => {
     return pyget('network_list');
 };
 
-export const getTemperatureHumidity = async (): Promise<{
-    temperature: string;
-    humidity: string;
-}> => {
-    const data = await pycall('getTemperatureHumidity').catch(() => {
+export const getTemperatureHumidity = () => {
+    return pycall('getTemperatureHumidity').catch(() => {
         if (process.env.NODE_ENV === 'development') {
             return {
                 temperature: Math.trunc(Math.random() * 100),
@@ -122,8 +119,6 @@ export const getTemperatureHumidity = async (): Promise<{
 
         return { temperature: '---', humidity: '---' };
     });
-
-    return data;
 };
 
 // Get wifi card info
@@ -223,8 +218,8 @@ export const removeAllStorage = () => {
     });
 };
 
-export const createCron = (cron: string) => {
-    return pycall('add_cron_job', cron).catch((error) => {
+export const createCron = ({ cron, name }: { cron: string; name: string }) => {
+    return pycall('add_cron_job', { cron_job: cron, name }).catch((error) => {
         if (process.env.NODE_ENV === 'development') {
             return '';
         }
@@ -232,22 +227,47 @@ export const createCron = (cron: string) => {
     });
 };
 
-export const getCrons = async () => {
-    const data = await pycall('list_cron_jobs').catch((error) => {
+export const getCrons = () => {
+    return pycall('list_cron_jobs').catch((error) => {
         if (process.env.NODE_ENV === 'development') {
-            return '';
+            return {};
         }
         return `getCrons error: ${error}`;
     });
-    return data;
 };
 
-export const deleteCron = (cron: string) => {
-    return pycall('delete_cron_job', cron).catch((error) => {
+export const deleteCron = (name: string) => {
+    return pycall('delete_cron_job', { name }).catch((error) => {
         if (process.env.NODE_ENV === 'development') {
             return '';
         }
         return `deleteCron error: ${error}`;
+    });
+};
+
+export const deleteAllCrons = () => {
+    return pycall('delete_all_cron_jobs').catch((error) => {
+        if (process.env.NODE_ENV === 'development') {
+            return '';
+        }
+        return `deleteAllCrons error: ${error}`;
+    });
+};
+
+export const updateCron = (
+    oldName: string,
+    newCronJob: string,
+    newName: string,
+) => {
+    return pycall('update_cron_job', {
+        old_name: oldName,
+        new_cron_job: newCronJob,
+        new_name: newName,
+    }).catch((error) => {
+        if (process.env.NODE_ENV === 'development') {
+            return '';
+        }
+        return `updateCron error: ${error}`;
     });
 };
 

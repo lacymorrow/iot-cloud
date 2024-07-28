@@ -7,17 +7,17 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { deleteCron, getCrons } from '@/lib/py/pyapi';
+import { deleteAllCrons, deleteCron, getCrons } from '@/lib/py/pyapi';
 import pylog from '@/lib/py/pylog';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function Schedule() {
-    const [crons, setCrons] = useState([]);
+    const [crons, setCrons] = useState({});
 
     const fetchCrons = async () => {
-        const result = await getCrons().then((data) => {
-            return data.split('\n\n');
+        const result = await getCrons().catch((error) => {
+            pylog(error);
         });
         setCrons(result);
     };
@@ -37,6 +37,11 @@ export default function Schedule() {
             });
     };
 
+    const handleDeleteAll = async () => {
+        await deleteAllCrons();
+        await fetchCrons();
+    };
+
     return (
         <div>
             <Card>
@@ -48,16 +53,26 @@ export default function Schedule() {
                 </CardHeader>
                 <CardContent>
                     <ul>
-                        {crons.map((cron) => (
-                            <li key={cron}>
-                                <div className="flex justify-between">
-                                    <div>{cron}</div>
-                                    <Button onClick={() => handleDelete(cron)}>
-                                        Delete
-                                    </Button>
-                                </div>
-                            </li>
-                        ))}
+                        {Object.entries(crons).map(([name, cron]) => {
+                            if (typeof cron !== 'string') {
+                                return null;
+                            }
+
+                            return (
+                                <li key={cron}>
+                                    <div className="flex justify-between">
+                                        <div>
+                                            {name}: {cron}
+                                        </div>
+                                        <Button
+                                            onClick={() => handleDelete(cron)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </li>
+                            );
+                        })}
                     </ul>
                 </CardContent>
                 <CardFooter className="flex justify-between">
@@ -67,6 +82,7 @@ export default function Schedule() {
                     >
                         Back
                     </Link>
+                    <Button onClick={handleDeleteAll}>Delete all</Button>
                     <Link href="/schedule/create" className={buttonVariants()}>
                         Create new event
                     </Link>

@@ -1,4 +1,4 @@
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -8,11 +8,54 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
+import { createCron, deleteCron, pyget, pyset } from '@/lib/py/pyapi';
+import pylog from '@/lib/py/pylog';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+
+const CRON_NAME = 'trigger';
 
 export default function Heating() {
-    const [temperature, setTemperature] = useState(70);
+    const [temperature, setTemperature] = useState(0);
+    const router = useRouter();
+
+    useEffect(() => {
+        pyget(CRON_NAME).then((result: any) => {
+            if (result) {
+                pylog(result);
+                setTemperature(result);
+            }
+        });
+    }, []);
+
+    const handleTurnOff = async () => {
+        await pyset(CRON_NAME, '0');
+        await deleteCron(CRON_NAME)
+            .then((result) => {
+                pylog(result);
+                router.push('/schedule');
+            })
+            .catch((error) => {
+                pylog(error);
+            });
+    };
+
+    const handleTurnOn = async () => {
+        await pyset(CRON_NAME, temperature);
+        await createCron({
+            name: CRON_NAME,
+            cron: '* * * * * python /home/pi/Desktop/heating.py',
+        })
+            .then((result) => {
+                pylog(result);
+                router.push('/schedule');
+            })
+            .catch((error) => {
+                pylog(error);
+            });
+    };
+
     return (
         <div>
             <Card>
@@ -21,7 +64,7 @@ export default function Heating() {
                     <CardDescription className="flex justify-between gap-2">
                         Keep above this temperature
                         <span className="text-4xl font-bold">
-                            {temperature}°F
+                            {temperature || '--'}°F
                         </span>
                     </CardDescription>
                 </CardHeader>
@@ -44,20 +87,22 @@ export default function Heating() {
                         Back
                     </Link>
                     <div className="flex gap-2">
-                        <Link
-                            href="/dashboard"
+                        <Button
+                            onClick={handleTurnOff}
                             className={buttonVariants({
                                 variant: 'destructive',
                             })}
                         >
                             Turn off
-                        </Link>
-                        <Link
-                            href="/dashboard"
-                            className={buttonVariants({ variant: 'default' })}
+                        </Button>
+                        <Button
+                            onClick={handleTurnOn}
+                            className={buttonVariants({
+                                variant: 'default',
+                            })}
                         >
                             Turn on
-                        </Link>
+                        </Button>
                     </div>
                 </CardFooter>
             </Card>
