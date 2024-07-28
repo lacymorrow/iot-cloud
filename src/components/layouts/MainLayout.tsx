@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { shutdown } from '@/lib/py/pyapi';
 import { cn } from '@/lib/utils';
 import config from '@/utils/config';
-import { RefreshCcw } from 'lucide-react';
+import { PowerOffIcon } from 'lucide-react';
 
 export const fontSans = FontSans({
     subsets: ['latin'],
@@ -42,7 +42,7 @@ const MainLayout = (props: MainLayoutProps) => {
                     className="absolute left-2 top-2"
                     onClick={handleShutdown}
                 >
-                    <RefreshCcw />
+                    <PowerOffIcon />
                 </Button>
 
                 {props.children}

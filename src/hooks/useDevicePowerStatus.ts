@@ -19,8 +19,6 @@ const useDevicePowerStatus = (params?: any) => {
         },
     );
 
-    console.log('useDevicePowerStatus> ', data, error);
-
     return {
         mutate,
         status: data === 'on',
