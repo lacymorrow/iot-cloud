@@ -250,3 +250,9 @@ export const deleteCron = (cron: string) => {
         return `deleteCron error: ${error}`;
     });
 };
+
+export const shutdown = () => {
+    return pycall('shutdown').catch((error) => {
+        return `shutdown error: ${error}`;
+    });
+};

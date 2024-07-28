@@ -3,8 +3,11 @@ import { ReactNode } from 'react';
 import { Inter as FontSans } from 'next/font/google';
 
 import Meta from '@/components/Meta';
+import { Button } from '@/components/ui/button';
+import { shutdown } from '@/lib/py/pyapi';
 import { cn } from '@/lib/utils';
 import config from '@/utils/config';
+import { RefreshCcw } from 'lucide-react';
 
 export const fontSans = FontSans({
     subsets: ['latin'],
@@ -12,6 +15,10 @@ export const fontSans = FontSans({
 });
 type MainLayoutProps = {
     children: ReactNode;
+};
+
+const handleShutdown = () => {
+    shutdown();
 };
 
 const MainLayout = (props: MainLayoutProps) => {
@@ -29,6 +36,15 @@ const MainLayout = (props: MainLayoutProps) => {
                     fontSans.variable,
                 )}
             >
+                <Button
+                    variant="outline"
+                    size="icon"
+                    className="absolute left-2 top-2"
+                    onClick={handleShutdown}
+                >
+                    <RefreshCcw />
+                </Button>
+
                 {props.children}
             </div>
         </>
