@@ -65,7 +65,7 @@ export default function Schedule() {
                                             {name}: {cron}
                                         </div>
                                         <Button
-                                            onClick={() => handleDelete(cron)}
+                                            onClick={() => handleDelete(name)}
                                         >
                                             Delete
                                         </Button>

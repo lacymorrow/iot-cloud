@@ -10,19 +10,27 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { createCron, deleteCron, pyget, pyset } from '@/lib/py/pyapi';
 import pylog from '@/lib/py/pylog';
+import { fahrenheitToCelcius } from '@/utils/fahrenheitToCelcius';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 const CRON_NAME = 'trigger';
+const DEFAULT_TEMPERATURE = 70;
+const MIN_TEMPERATURE = 60;
+const MAX_TEMPERATURE = 100;
 
 export default function Heating() {
-    const [temperature, setTemperature] = useState(0);
+    const [temperature, setTemperature] = useState(DEFAULT_TEMPERATURE);
     const router = useRouter();
 
     useEffect(() => {
         pyget(CRON_NAME).then((result: any) => {
-            if (result) {
+            if (
+                result &&
+                result >= MIN_TEMPERATURE &&
+                result <= MAX_TEMPERATURE
+            ) {
                 pylog(result);
                 setTemperature(result);
             }
@@ -30,11 +38,11 @@ export default function Heating() {
     }, []);
 
     const handleTurnOff = async () => {
-        await pyset(CRON_NAME, '0');
+        await pyset(CRON_NAME, 0);
         await deleteCron(CRON_NAME)
             .then((result) => {
                 pylog(result);
-                router.push('/schedule');
+                router.push('/dashboard');
             })
             .catch((error) => {
                 pylog(error);
@@ -42,14 +50,16 @@ export default function Heating() {
     };
 
     const handleTurnOn = async () => {
-        await pyset(CRON_NAME, temperature);
+        const celcius = fahrenheitToCelcius(temperature);
+
+        await pyset(CRON_NAME, celcius);
         await createCron({
             name: CRON_NAME,
-            cron: '* * * * * python /home/pi/Desktop/heating.py',
+            cron: '* * * * * python /home/pi/Desktop/trigger.py',
         })
             .then((result) => {
                 pylog(result);
-                router.push('/schedule');
+                router.push('/dashboard');
             })
             .catch((error) => {
                 pylog(error);
@@ -74,8 +84,8 @@ export default function Heating() {
                         onValueChange={(value) =>
                             value[0] && setTemperature(value[0])
                         }
-                        min={50}
-                        max={100}
+                        min={MIN_TEMPERATURE}
+                        max={MAX_TEMPERATURE}
                         step={1}
                     />
                 </CardContent>
