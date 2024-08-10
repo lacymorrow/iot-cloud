@@ -7,13 +7,6 @@ import pycall from './pycall';
 // log errors
 // ERROR HANDLING
 export const pyget = (key: string) => {
-    // DEBUG
-    if (process.env.NODE_ENV === 'development') {
-        const item = JSON.parse(localStorage.getItem(key) || '');
-        console.log(`Dev Pyget Got: ${key}, ${item}`);
-        return item;
-    }
-
     return pycall('get', { key })
         .then((res) => {
             console.log(`Got: `, res);
@@ -25,6 +18,14 @@ export const pyget = (key: string) => {
         })
         .catch((error) => {
             console.log(`pyget error: ${error}`);
+
+            // DEBUG
+            if (process.env.NODE_ENV === 'development') {
+                const item = JSON.parse(localStorage.getItem(key) || '');
+                console.log(`Dev Pyget Got: ${key}, ${item}`);
+                return item;
+            }
+
             return '';
         });
 };

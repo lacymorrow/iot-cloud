@@ -7,10 +7,10 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { Slider } from '@/components/ui/slider';
 import { createCron, deleteCron, pyget, pyset } from '@/lib/py/pyapi';
 import pylog from '@/lib/py/pylog';
 import { fahrenheitToCelcius } from '@/utils/fahrenheitToCelcius';
+import { MinusIcon, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -25,16 +25,20 @@ export default function Heating() {
     const router = useRouter();
 
     useEffect(() => {
-        pyget(CRON_NAME).then((result: any) => {
-            if (
-                result &&
-                result >= MIN_TEMPERATURE &&
-                result <= MAX_TEMPERATURE
-            ) {
-                pylog(result);
-                setTemperature(result);
-            }
-        });
+        pyget(CRON_NAME)
+            .then((result: any) => {
+                if (
+                    result &&
+                    result >= MIN_TEMPERATURE &&
+                    result <= MAX_TEMPERATURE
+                ) {
+                    pylog(result);
+                    setTemperature(result);
+                }
+            })
+            .catch((error) => {
+                pylog(error);
+            });
     }, []);
 
     const handleTurnOff = async () => {
@@ -66,56 +70,69 @@ export default function Heating() {
             });
     };
 
+    const handleDecreaseTemperature = () => {
+        if (temperature > MIN_TEMPERATURE) {
+            setTemperature(temperature - 1);
+        }
+    };
+
+    const handleIncreaseTemperature = () => {
+        if (temperature < MAX_TEMPERATURE) {
+            setTemperature(temperature + 1);
+        }
+    };
+
     return (
-        <div>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Heating</CardTitle>
-                    <CardDescription className="flex justify-between gap-2">
-                        Keep above this temperature
-                        <span className="text-4xl font-bold">
-                            {temperature || '--'}°F
-                        </span>
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Slider
-                        value={[temperature]}
-                        onValueChange={(value) =>
-                            value[0] && setTemperature(value[0])
-                        }
-                        min={MIN_TEMPERATURE}
-                        max={MAX_TEMPERATURE}
-                        step={1}
-                    />
-                </CardContent>
-                <CardFooter className="flex justify-between gap-2">
-                    <Link
-                        href="/dashboard"
-                        className={buttonVariants({ variant: 'secondary' })}
+        <Card className="flex h-full flex-col justify-between">
+            <CardHeader>
+                <CardTitle>Heating</CardTitle>
+                <CardDescription className="flex justify-between gap-2">
+                    Keep above this temperature
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-around gap-2">
+                <Button
+                    variant={'outline'}
+                    size={'lg'}
+                    onClick={handleDecreaseTemperature}
+                >
+                    <MinusIcon />
+                </Button>
+                <p className="text-4xl font-bold">{temperature || '--'}°F</p>
+                <Button
+                    variant={'outline'}
+                    size={'lg'}
+                    onClick={handleIncreaseTemperature}
+                >
+                    <PlusIcon />
+                </Button>
+            </CardContent>
+            <CardFooter className="flex justify-between gap-2">
+                <Link
+                    href="/dashboard"
+                    className={buttonVariants({ variant: 'secondary' })}
+                >
+                    Back
+                </Link>
+                <div className="flex gap-2">
+                    <Button
+                        onClick={handleTurnOff}
+                        className={buttonVariants({
+                            variant: 'destructive',
+                        })}
                     >
-                        Back
-                    </Link>
-                    <div className="flex gap-2">
-                        <Button
-                            onClick={handleTurnOff}
-                            className={buttonVariants({
-                                variant: 'destructive',
-                            })}
-                        >
-                            Turn off
-                        </Button>
-                        <Button
-                            onClick={handleTurnOn}
-                            className={buttonVariants({
-                                variant: 'default',
-                            })}
-                        >
-                            Turn on
-                        </Button>
-                    </div>
-                </CardFooter>
-            </Card>
-        </div>
+                        Turn off
+                    </Button>
+                    <Button
+                        onClick={handleTurnOn}
+                        className={buttonVariants({
+                            variant: 'default',
+                        })}
+                    >
+                        Turn on
+                    </Button>
+                </div>
+            </CardFooter>
+        </Card>
     );
 }
